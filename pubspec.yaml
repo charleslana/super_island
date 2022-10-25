@@ -10,8 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  flame: ^1.4.0
-  flame_audio: ^1.3.2
   flutter_riverpod: ^2.0.2
 
 dev_dependencies:
@@ -23,7 +21,21 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/
     - assets/images/characters/
     - assets/images/battle/bg/
 
     - assets/audio/
+
+  fonts:
+    - family: Asap
+      fonts:
+        - asset: assets/fonts/Asap-Medium.otf
+
+    - family: PoetsenOne
+      fonts:
+        - asset: assets/fonts/PoetsenOne-Regular.ttf
+
+    - family: SVN
+      fonts:
+        - asset: assets/fonts/SVN-Titillium-bold.ttf
