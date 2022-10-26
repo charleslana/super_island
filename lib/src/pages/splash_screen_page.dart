@@ -8,7 +8,7 @@ class SplashScreenPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, Routes.landing);
+      Navigator.pushReplacementNamed(context, Routes.home);
     });
 
     return SafeArea(

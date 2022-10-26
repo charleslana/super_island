@@ -10,7 +10,7 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         body: Center(
           child: ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, Routes.home),
+            onPressed: () => Navigator.pushNamed(context, Routes.battle),
             child: const Text('battle page'),
           ),
         ),

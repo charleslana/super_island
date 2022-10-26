@@ -34,7 +34,7 @@ class _AnimatedSuperIslandLogoState extends State<AnimatedSuperIslandLogo>
     return SlideTransition(
       position: _animation,
       child: Image.asset(
-        logoSuperIsland,
+        logoImage,
         fit: BoxFit.contain,
       ),
     );
