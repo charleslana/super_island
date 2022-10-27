@@ -63,7 +63,7 @@ class CharacterComponent extends PositionComponent
             CharacterMoveEnum.standard;
         break;
       case CharacterMoveEnum.defense:
-        await _setSpriteAnimation(getDefenseSprite());
+        await _setSpriteAnimation(_getDefenseSprite());
         break;
       default:
         await _setSpriteAnimation(_getStandardSprite());
@@ -117,7 +117,7 @@ class CharacterComponent extends PositionComponent
     );
   }
 
-  SpriteAnimationData getDefenseSprite() {
+  SpriteAnimationData _getDefenseSprite() {
     return SpriteAnimationData.sequenced(
       amount: 1,
       stepTime: 0.1,
