@@ -4,4 +4,5 @@ enum CharacterMoveEnum {
   attack,
   special,
   defense,
+  animation,
 }

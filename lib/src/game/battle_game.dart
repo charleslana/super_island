@@ -87,10 +87,14 @@ class BattleGame extends FlameGame
     if (battleWatch.move == CharacterMoveEnum.standard &&
         battleWatch.isAttack &&
         player1.isColliding) {
+      ref.read(battleProvider.notifier).move = CharacterMoveEnum.animation;
       _defense();
       player1.spriteAnimation.animation?.onComplete = () async {
-        ref.read(battleProvider.notifier).isAttack = false;
+        ref.read(battleProvider.notifier)
+          ..isAttack = false
+          ..move = CharacterMoveEnum.standard;
         await player1.setSprite(CharacterMoveEnum.standard);
+        await enemy1.setSprite(CharacterMoveEnum.standard);
       };
     }
   }
@@ -98,10 +102,12 @@ class BattleGame extends FlameGame
   Future<void> _defense() async {
     enemy1.isDefense = true;
     if (enemy1.isDefense) {
-      enemy1.isDefense = false;
-      await enemy1.setSprite(CharacterMoveEnum.defense);
+      Future.delayed(const Duration(milliseconds: 300), () async {
+        await enemy1.setSprite(CharacterMoveEnum.defense);
+        enemy1.setDamageColor();
+      });
       enemy1.spriteAnimation.animation?.onComplete = () {
-        enemy1.setSprite(CharacterMoveEnum.standard);
+        enemy1.isDefense = false;
       };
       return;
     }
