@@ -6,9 +6,12 @@ import 'package:super_island/src/components/battle_bg_component.dart';
 import 'package:super_island/src/components/character_component.dart';
 import 'package:super_island/src/components/skill_action_component.dart';
 import 'package:super_island/src/components/skill_component.dart';
+import 'package:super_island/src/enums/character_move_enum.dart';
 import 'package:super_island/src/game/character_position.dart';
+import 'package:super_island/src/providers/battle_provider.dart';
 
-class BattleGame extends FlameGame with HasTappableComponents {
+class BattleGame extends FlameGame
+    with HasTappableComponents, HasCollisionDetection {
   BattleGame(this.ref);
 
   final WidgetRef ref;
@@ -30,18 +33,77 @@ class BattleGame extends FlameGame with HasTappableComponents {
     player1 = CharacterComponent(
       characterImage: 'characters/shanks2.png',
       characterPosition: left1,
-      isFlip: true,
     );
     await add(player1);
 
     enemy1 = CharacterComponent(
       characterImage: 'characters/shanks2.png',
       characterPosition: right1,
+      isFlip: true,
     );
     await add(enemy1);
 
     await add(SkillComponent(size));
     await add(SkillActionComponent());
     return super.onLoad();
+  }
+
+  @override
+  void update(double dt) {
+    final battleWatch = ref.watch(battleProvider);
+    _run(battleWatch);
+    _attack(battleWatch);
+    _validateCollision(battleWatch);
+    super.update(dt);
+  }
+
+  Future<void> _run(BattleProvider battleWatch) async {
+    if (battleWatch.move == CharacterMoveEnum.run &&
+        !battleWatch.isAttack &&
+        (player1.size.x + player1.x) < size.x) {
+      await player1.setSprite(battleWatch.move);
+      player1
+        ..priority = 1
+        ..x += size.x / 70;
+    }
+    _goBack(battleWatch);
+  }
+
+  void _goBack(BattleProvider battleWatch) {
+    if (battleWatch.move == CharacterMoveEnum.standard &&
+        !battleWatch.isAttack &&
+        player1.x > player1.starterPosition.x) {
+      player1.x -= size.x / 70;
+    }
+  }
+
+  Future<void> _attack(BattleProvider battleWatch) async {
+    if (battleWatch.move == CharacterMoveEnum.attack) {
+      await player1.setSprite(CharacterMoveEnum.attack);
+    }
+  }
+
+  void _validateCollision(BattleProvider battleWatch) {
+    if (battleWatch.move == CharacterMoveEnum.standard &&
+        battleWatch.isAttack &&
+        player1.isColliding) {
+      _defense();
+      player1.spriteAnimation.animation?.onComplete = () async {
+        ref.read(battleProvider.notifier).isAttack = false;
+        await player1.setSprite(CharacterMoveEnum.standard);
+      };
+    }
+  }
+
+  Future<void> _defense() async {
+    enemy1.isDefense = true;
+    if (enemy1.isDefense) {
+      enemy1.isDefense = false;
+      await enemy1.setSprite(CharacterMoveEnum.defense);
+      enemy1.spriteAnimation.animation?.onComplete = () {
+        enemy1.setSprite(CharacterMoveEnum.standard);
+      };
+      return;
+    }
   }
 }

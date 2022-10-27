@@ -1,8 +1,12 @@
+import 'package:flame/cache.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:super_island/src/enums/character_move_enum.dart';
 import 'package:super_island/src/game/battle_game.dart';
+import 'package:super_island/src/providers/battle_provider.dart';
 
-class CharacterComponent extends PositionComponent with HasGameRef<BattleGame> {
+class CharacterComponent extends PositionComponent
+    with HasGameRef<BattleGame>, CollisionCallbacks {
   CharacterComponent({
     required this.characterImage,
     required this.characterPosition,
@@ -18,22 +22,108 @@ class CharacterComponent extends PositionComponent with HasGameRef<BattleGame> {
   Vector2 screenSize = Vector2.all(0);
   Vector2 starterPosition = Vector2.all(0);
 
+  final spriteAnimation = SpriteAnimationComponent();
+  bool isDefense = false;
+
   @override
   Future<void>? onLoad() async {
     screenSize = gameRef.size;
-    starterPosition = Vector2(characterPosition.x * (screenSize.x / 1),
-        characterPosition.y * (screenSize.y / 1));
-    size = Vector2(640, 512) * (screenSize.y / 2000);
-    position = starterPosition;
-
-    final component = SpriteComponent()
-      ..sprite = await Sprite.load(characterImage)
-      ..size = Vector2(640, 512) * (screenSize.y / 2000);
+    _setDataComponent();
+    await _setSpriteAnimation(_getStandardSprite());
     if (isFlip) {
-      component.flipHorizontallyAroundCenter();
+      spriteAnimation.flipHorizontallyAroundCenter();
     }
-    await add(component);
+    await add(spriteAnimation);
     await add(RectangleHitbox());
     return super.onLoad();
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    if (other is CharacterComponent &&
+        gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.run) {
+      gameRef.ref.read(battleProvider.notifier)
+        ..move = CharacterMoveEnum.attack
+        ..isAttack = true;
+    }
+    super.onCollision(intersectionPoints, other);
+  }
+
+  Future<void> setSprite(CharacterMoveEnum move) async {
+    switch (move) {
+      case CharacterMoveEnum.standard:
+        await _setSpriteAnimation(_getStandardSprite());
+        break;
+      case CharacterMoveEnum.run:
+        await _setSpriteAnimation(_getRunSprite());
+        break;
+      case CharacterMoveEnum.attack:
+        await _setSpriteAnimation(_getAttackSprite());
+        gameRef.ref.read(battleProvider.notifier).move =
+            CharacterMoveEnum.standard;
+        break;
+      case CharacterMoveEnum.defense:
+        await _setSpriteAnimation(getDefenseSprite());
+        break;
+      default:
+        await _setSpriteAnimation(_getStandardSprite());
+    }
+  }
+
+  Future<void> _setSpriteAnimation(
+      SpriteAnimationData spriteAnimationData) async {
+    final sprite = await Images().load(characterImage);
+    final spriteAnimationComponent =
+        SpriteAnimationComponent.fromFrameData(sprite, spriteAnimationData);
+    spriteAnimation
+      ..animation = spriteAnimationComponent.animation
+      ..size = Vector2(256, 224) * (screenSize.y / 800);
+  }
+
+  void _setDataComponent() {
+    starterPosition = Vector2(characterPosition.x * (screenSize.x / 1),
+        characterPosition.y * (screenSize.y / 1));
+    size = Vector2(256, 224) * (screenSize.y / 800);
+    size.x = size.x / 2;
+    position = starterPosition;
+  }
+
+  SpriteAnimationData _getStandardSprite() {
+    return SpriteAnimationData.sequenced(
+      amount: 4,
+      stepTime: 0.1,
+      textureSize: Vector2(256, 224),
+      texturePosition: Vector2(0, 0),
+    );
+  }
+
+  SpriteAnimationData _getRunSprite() {
+    return SpriteAnimationData.sequenced(
+      amount: 1,
+      stepTime: 0.1,
+      textureSize: Vector2(256, 224),
+      texturePosition: Vector2(0, 256),
+      loop: false,
+    );
+  }
+
+  SpriteAnimationData _getAttackSprite() {
+    return SpriteAnimationData.sequenced(
+      amount: 2,
+      stepTime: 0.3,
+      textureSize: Vector2(256, 224),
+      texturePosition: Vector2(500, 250),
+      loop: false,
+    );
+  }
+
+  SpriteAnimationData getDefenseSprite() {
+    return SpriteAnimationData.sequenced(
+      amount: 1,
+      stepTime: 0.1,
+      textureSize: Vector2(256, 224),
+      texturePosition: Vector2(256, 235),
+      loop: false,
+    );
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
+import 'package:super_island/src/enums/character_move_enum.dart';
 import 'package:super_island/src/game/battle_game.dart';
+import 'package:super_island/src/providers/battle_provider.dart';
 
 class SkillActionComponent extends PositionComponent
     with HasGameRef<BattleGame>, TapCallbacks {
@@ -51,18 +53,21 @@ class SkillActionComponent extends PositionComponent
 
   @override
   void onTapUp(TapUpEvent event) {
+    if (gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.standard) {
+      gameRef.ref.read(battleProvider.notifier).move = CharacterMoveEnum.run;
+    }
     super.onTapUp(event);
   }
 
-  @override
-  void onTapDown(TapDownEvent event) {
-    // print('tap down');
-    super.onTapDown(event);
-  }
+  // @override
+  // void onTapDown(TapDownEvent event) {
+  //   // print('tap down');
+  //   super.onTapDown(event);
+  // }
 
-  @override
-  void onTapCancel(TapCancelEvent event) {
-    // print('tap cancel');
-    super.onTapCancel(event);
-  }
+  // @override
+  // void onTapCancel(TapCancelEvent event) {
+  //   // print('tap cancel');
+  //   super.onTapCancel(event);
+  // }
 }
