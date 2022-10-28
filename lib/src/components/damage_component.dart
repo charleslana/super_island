@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 
-class DamageComponent extends SpriteAnimationComponent {
+class DamageComponent extends TextComponent {
   DamageComponent({this.flip = false})
       : super(
           priority: 2,
@@ -11,7 +11,7 @@ class DamageComponent extends SpriteAnimationComponent {
 
   final bool flip;
 
-  final _paint = Paint()..color = Colors.transparent;
+  late TextComponent textComponent;
 
   @override
   void onGameResize(Vector2 size) {
@@ -22,55 +22,42 @@ class DamageComponent extends SpriteAnimationComponent {
     this.size = Vector2(size.x / 7, size.y / 4);
   }
 
-  @mustCallSuper
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    debugMode = false;
-    const textStyle = TextStyle(
-      color: Colors.red,
-      fontSize: 30,
-      fontFamily: 'PoetsenOne',
-      shadows: [
-        Shadow(offset: Offset(-1.5, -1.5)),
-        Shadow(offset: Offset(1.5, -1.5)),
-        Shadow(offset: Offset(1.5, 1.5)),
-        Shadow(offset: Offset(-1.5, 1.5)),
-      ],
-    );
-    const textSpan = TextSpan(
-      text: '- 100K',
-      style: textStyle,
-    );
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-      textScaleFactor: size.y / 100,
-      textAlign: TextAlign.center,
-    )..layout(
-        maxWidth: size.x,
-      );
-    final xCenter = (size.x - textPainter.width) / 2;
-    final yCenter = (size.y - textPainter.height) / 2;
-    final offset = Offset(xCenter, yCenter);
-    canvas.drawRect(size.toRect(), _paint);
-    textPainter.paint(canvas, offset);
-  }
-
   @override
   Future<void>? onLoad() {
+    debugMode = true;
     if (flip) {
       flipHorizontallyAroundCenter();
     }
-    add(
-      OpacityEffect.fadeOut(
-        EffectController(
-          duration: 1.5,
-          reverseDuration: 1.5,
-          infinite: true,
-        ),
+    final textPaint = TextPaint(
+      style: TextStyle(
+        color: Colors.red,
+        fontSize: size.x / 4,
+        fontFamily: 'PoetsenOne',
+        shadows: const [
+          Shadow(offset: Offset(-1.5, -1.5)),
+          Shadow(offset: Offset(1.5, -1.5)),
+          Shadow(offset: Offset(1.5, 1.5)),
+          Shadow(offset: Offset(-1.5, 1.5)),
+        ],
       ),
     );
+    textComponent = TextComponent(
+      text: '-100K',
+      textRenderer: textPaint,
+      size: Vector2(size.x / 7, size.y / 3),
+      position: Vector2(size.x / 6.5, size.y / 3),
+    );
+    // textComponent
+    //   ..add(
+    //     OpacityEffect.fadeOut(
+    //       EffectController(
+    //         duration: 1.5,
+    //         reverseDuration: 1.5,
+    //         infinite: true,
+    //       ),
+    //     ),
+    //   );
+    add(textComponent);
     return super.onLoad();
   }
 }
