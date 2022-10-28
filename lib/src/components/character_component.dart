@@ -3,6 +3,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
+import 'package:super_island/src/components/damage_component.dart';
 import 'package:super_island/src/enums/character_move_enum.dart';
 import 'package:super_island/src/game/battle_game.dart';
 import 'package:super_island/src/providers/battle_provider.dart';
@@ -143,5 +144,9 @@ class CharacterComponent extends SpriteAnimationComponent
         ),
       ),
     );
+  }
+
+  void setDamage({bool flip = false}) {
+    spriteAnimation.add(DamageComponent(flip: flip));
   }
 }

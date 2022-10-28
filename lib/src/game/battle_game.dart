@@ -35,6 +35,7 @@ class BattleGame extends FlameGame
       characterPosition: left1,
     );
     await add(player1);
+    player1.setDamage();
 
     enemy1 = CharacterComponent(
       characterImage: 'characters/shanks2.png',
@@ -42,6 +43,7 @@ class BattleGame extends FlameGame
       isFlip: true,
     );
     await add(enemy1);
+    enemy1.setDamage(flip: true);
 
     await add(SkillComponent(size));
     await add(SkillActionComponent());
