@@ -27,6 +27,7 @@ class CharacterComponent extends SpriteAnimationComponent
 
   final spriteAnimation = SpriteAnimationComponent();
   bool isDefense = false;
+  late TextComponent textComponent;
 
   @override
   Future<void>? onLoad() async {
@@ -147,6 +148,14 @@ class CharacterComponent extends SpriteAnimationComponent
   }
 
   void setDamage({bool flip = false}) {
-    spriteAnimation.add(DamageComponent(flip: flip));
+    textComponent = DamageComponent(flip: flip);
+    if (textComponent.parent != null) {
+      spriteAnimation.remove(textComponent);
+    }
+    spriteAnimation.add(textComponent);
+  }
+
+  void removeDamage() {
+    spriteAnimation.remove(textComponent);
   }
 }

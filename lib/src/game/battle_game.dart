@@ -35,7 +35,6 @@ class BattleGame extends FlameGame
       characterPosition: left1,
     );
     await add(player1);
-    player1.setDamage();
 
     enemy1 = CharacterComponent(
       characterImage: 'characters/shanks2.png',
@@ -43,7 +42,6 @@ class BattleGame extends FlameGame
       isFlip: true,
     );
     await add(enemy1);
-    enemy1.setDamage(flip: true);
 
     await add(SkillComponent(size));
     await add(SkillActionComponent());
@@ -97,6 +95,7 @@ class BattleGame extends FlameGame
           ..move = CharacterMoveEnum.standard;
         await player1.setSprite(CharacterMoveEnum.standard);
         await enemy1.setSprite(CharacterMoveEnum.standard);
+        enemy1.isDefense = false;
       };
     }
   }
@@ -106,7 +105,12 @@ class BattleGame extends FlameGame
     if (enemy1.isDefense) {
       Future.delayed(const Duration(milliseconds: 300), () async {
         await enemy1.setSprite(CharacterMoveEnum.defense);
-        enemy1.setDamageColor();
+        enemy1
+          ..setDamageColor()
+          ..setDamage(flip: true);
+      });
+      Future.delayed(const Duration(milliseconds: 800), () async {
+        enemy1.removeDamage();
       });
       enemy1.spriteAnimation.animation?.onComplete = () {
         enemy1.isDefense = false;

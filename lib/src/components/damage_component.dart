@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 
 class DamageComponent extends TextComponent {
@@ -24,7 +23,7 @@ class DamageComponent extends TextComponent {
 
   @override
   Future<void>? onLoad() {
-    debugMode = true;
+    debugMode = false;
     if (flip) {
       flipHorizontallyAroundCenter();
     }
@@ -45,7 +44,7 @@ class DamageComponent extends TextComponent {
       text: '-100K',
       textRenderer: textPaint,
       size: Vector2(size.x / 7, size.y / 3),
-      position: Vector2(size.x / 6.5, size.y / 3),
+      position: Vector2(size.x / 6.5, size.y / 50),
     );
     // textComponent
     //   ..add(
@@ -59,5 +58,13 @@ class DamageComponent extends TextComponent {
     //   );
     add(textComponent);
     return super.onLoad();
+  }
+
+  @override
+  void update(double dt) {
+    if (textComponent.y > (size.y - (size.y / 1.7) * 2.3)) {
+      textComponent.y -= size.y / 50;
+    }
+    super.update(dt);
   }
 }
