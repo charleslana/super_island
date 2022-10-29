@@ -1,8 +1,10 @@
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:super_island/src/components/battle_bg_component.dart';
+import 'package:super_island/src/components/battle_sound_component.dart';
 import 'package:super_island/src/components/character_component.dart';
 import 'package:super_island/src/components/skill_action_component.dart';
 import 'package:super_island/src/components/skill_component.dart';
@@ -27,8 +29,10 @@ class BattleGame extends FlameGame
 
   @override
   Future<void>? onLoad() async {
-    final battleBgComponent = BattleBgComponent();
-    await add(battleBgComponent);
+    await loadBattleAudio();
+
+    await add(BattleBgComponent());
+    await add(BattleSoundComponent());
 
     player1 = CharacterComponent(
       characterImage: 'characters/shanks2.png',
@@ -55,6 +59,11 @@ class BattleGame extends FlameGame
     _attack(battleWatch);
     _validateCollision(battleWatch);
     super.update(dt);
+  }
+
+  @override
+  void onRemove() {
+    FlameAudio.bgm.dispose();
   }
 
   Future<void> _run(BattleProvider battleWatch) async {
@@ -110,6 +119,7 @@ class BattleGame extends FlameGame
           ..removeDamage()
           ..setDamage(flip: true)
           ..changeLife();
+        await FlameAudio.play('shanks1.wav');
       });
       Future.delayed(const Duration(milliseconds: 800), () async {
         enemy1.removeDamage();
@@ -120,5 +130,12 @@ class BattleGame extends FlameGame
       };
       return;
     }
+  }
+
+  Future<void> loadBattleAudio() async {
+    await FlameAudio.audioCache.loadAll(['shanks1.wav', 'bgm_wano.mp3']);
+    FlameAudio.bgm.initialize();
+    await FlameAudio.bgm.stop();
+    await FlameAudio.bgm.play('bgm_wano.mp3', volume: .50);
   }
 }
