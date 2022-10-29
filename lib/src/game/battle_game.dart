@@ -107,6 +107,7 @@ class BattleGame extends FlameGame
         await enemy1.setSprite(CharacterMoveEnum.defense);
         enemy1
           ..setDamageColor()
+          ..removeDamage()
           ..setDamage(flip: true);
       });
       Future.delayed(const Duration(milliseconds: 800), () async {
