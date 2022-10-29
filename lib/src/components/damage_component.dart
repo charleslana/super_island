@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:super_island/src/utils/utils.dart';
 
 class DamageComponent extends TextComponent {
   DamageComponent({this.flip = false})
@@ -41,7 +42,7 @@ class DamageComponent extends TextComponent {
       ),
     );
     textComponent = TextComponent(
-      text: '-100K',
+      text: '-${numberAbbreviation(145210)}',
       textRenderer: textPaint,
       size: Vector2(size.x / 7, size.y / 3),
       position: Vector2(size.x / 6.5, size.y / 50),
