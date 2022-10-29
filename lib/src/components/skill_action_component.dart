@@ -27,7 +27,7 @@ class SkillActionComponent extends PositionComponent
 
   @override
   void render(Canvas canvas) {
-    debugMode = true;
+    debugMode = false;
     const textStyle = TextStyle(
       color: Colors.black,
       fontSize: 30,
@@ -55,6 +55,7 @@ class SkillActionComponent extends PositionComponent
   void onTapUp(TapUpEvent event) {
     if (gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.standard) {
       gameRef.ref.read(battleProvider.notifier).move = CharacterMoveEnum.run;
+      gameRef.player1.toggleBar();
     }
     super.onTapUp(event);
   }

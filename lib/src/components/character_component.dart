@@ -4,6 +4,8 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:super_island/src/components/damage_component.dart';
+import 'package:super_island/src/components/empty_bar_component.dart';
+import 'package:super_island/src/enums/bar_enum.dart';
 import 'package:super_island/src/enums/character_move_enum.dart';
 import 'package:super_island/src/game/battle_game.dart';
 import 'package:super_island/src/providers/battle_provider.dart';
@@ -28,6 +30,7 @@ class CharacterComponent extends SpriteAnimationComponent
   final spriteAnimation = SpriteAnimationComponent();
   bool isDefense = false;
   TextComponent? textComponent;
+  late EmptyBarComponent lifeBar;
 
   @override
   Future<void>? onLoad() async {
@@ -37,6 +40,8 @@ class CharacterComponent extends SpriteAnimationComponent
     if (isFlip) {
       spriteAnimation.flipHorizontallyAroundCenter();
     }
+    lifeBar = EmptyBarComponent(bar: BarEnum.life, flip: isFlip);
+    await spriteAnimation.add(lifeBar);
     await add(spriteAnimation);
     await add(RectangleHitbox());
     return super.onLoad();
@@ -159,5 +164,13 @@ class CharacterComponent extends SpriteAnimationComponent
     if (textComponent?.parent != null) {
       spriteAnimation.remove(textComponent!);
     }
+  }
+
+  void changeLife() {
+    lifeBar.changeLife();
+  }
+
+  void toggleBar({bool isShow = true}) {
+    lifeBar.toggleBar(isShow: isShow);
   }
 }

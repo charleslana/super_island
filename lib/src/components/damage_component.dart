@@ -5,7 +5,7 @@ import 'package:super_island/src/utils/utils.dart';
 class DamageComponent extends TextComponent {
   DamageComponent({this.flip = false})
       : super(
-          priority: 2,
+          priority: 1,
           size: Vector2.all(100),
         );
 
@@ -47,16 +47,6 @@ class DamageComponent extends TextComponent {
       size: Vector2(size.x / 7, size.y / 3),
       position: Vector2(size.x / 6.5, size.y / 50),
     );
-    // textComponent
-    //   ..add(
-    //     OpacityEffect.fadeOut(
-    //       EffectController(
-    //         duration: 1.5,
-    //         reverseDuration: 1.5,
-    //         infinite: true,
-    //       ),
-    //     ),
-    //   );
     add(textComponent);
     return super.onLoad();
   }

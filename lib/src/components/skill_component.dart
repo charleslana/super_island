@@ -17,7 +17,7 @@ class SkillComponent extends PositionComponent {
 
   @override
   void render(Canvas canvas) {
-    debugMode = true;
+    debugMode = false;
     canvas.drawRect(size.toRect(), _paint);
   }
 }

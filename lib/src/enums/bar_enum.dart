@@ -1,0 +1,4 @@
+enum BarEnum {
+  life,
+  fury,
+}

@@ -108,10 +108,12 @@ class BattleGame extends FlameGame
         enemy1
           ..setDamageColor()
           ..removeDamage()
-          ..setDamage(flip: true);
+          ..setDamage(flip: true)
+          ..changeLife();
       });
       Future.delayed(const Duration(milliseconds: 800), () async {
         enemy1.removeDamage();
+        player1.toggleBar(isShow: false);
       });
       enemy1.spriteAnimation.animation?.onComplete = () {
         enemy1.isDefense = false;

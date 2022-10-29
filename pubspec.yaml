@@ -27,6 +27,7 @@ flutter:
     - assets/images/
     - assets/images/characters/
     - assets/images/battle/bg/
+    - assets/images/bar/
 
     - assets/audio/
 
