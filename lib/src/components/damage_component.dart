@@ -11,7 +11,7 @@ class DamageComponent extends TextComponent {
 
   final bool flip;
 
-  late TextComponent textComponent;
+  late TextComponent _textComponent;
 
   @override
   void onGameResize(Vector2 size) {
@@ -41,20 +41,20 @@ class DamageComponent extends TextComponent {
         ],
       ),
     );
-    textComponent = TextComponent(
+    _textComponent = TextComponent(
       text: '-${numberAbbreviation(145210)}',
       textRenderer: textPaint,
       size: Vector2(size.x / 7, size.y / 3),
       position: Vector2(size.x / 6.5, size.y / 50),
     );
-    add(textComponent);
+    add(_textComponent);
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
-    if (textComponent.y > (size.y - (size.y / 1.7) * 2.3)) {
-      textComponent.y -= size.y / 50;
+    if (_textComponent.y > (size.y - (size.y / 1.7) * 2.3)) {
+      _textComponent.y -= size.y / 50;
     }
     super.update(dt);
   }

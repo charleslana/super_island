@@ -8,10 +8,9 @@ final battleProvider = ChangeNotifierProvider(
 );
 
 class BattleProvider extends ValueNotifier<dynamic> {
-  BattleProvider(this.move, {this.isAttack = false}) : super(move);
+  BattleProvider(this.move) : super(move);
 
   CharacterMoveEnum move;
-  bool isAttack;
 
   Future<void> toggleAudio({bool playAudio = true}) async {
     if (playAudio) {

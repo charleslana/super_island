@@ -55,7 +55,7 @@ class SkillActionComponent extends PositionComponent
   void onTapUp(TapUpEvent event) {
     if (gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.standard) {
       gameRef.ref.read(battleProvider.notifier).move = CharacterMoveEnum.run;
-      gameRef.player1.toggleBar();
+      gameRef.player1.toggleBar(isShow: false);
     }
     super.onTapUp(event);
   }

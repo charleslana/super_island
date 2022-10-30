@@ -17,8 +17,7 @@ class EmptyBarComponent extends PositionComponent
   final bool flip;
 
   late SpriteComponent _spriteComponent;
-
-  late LifeBarComponent life;
+  late LifeBarComponent _life;
 
   @override
   Future<void>? onLoad() async {
@@ -39,28 +38,27 @@ class EmptyBarComponent extends PositionComponent
   Future<void> _addBar(BarEnum bar) async {
     switch (bar) {
       case BarEnum.life:
-        life = LifeBarComponent();
-        await _spriteComponent.add(life);
+        _life = LifeBarComponent();
+        await _spriteComponent.add(_life);
         break;
       case BarEnum.fury:
-        // await _spriteComponent.add(LifeBarComponent());
         break;
       default:
     }
   }
 
   void changeLife() {
-    life.changeSize();
+    _life.changeSize();
   }
 
   void toggleBar({bool isShow = true}) {
-    if (isShow) {
+    if (!isShow) {
       _spriteComponent
           .add(OpacityEffect.fadeOut(EffectController(duration: 0)));
-      life.toggleBar(isShow: isShow);
+      _life.toggleBar(isShow: isShow);
       return;
     }
     _spriteComponent.add(OpacityEffect.fadeIn(EffectController(duration: 0)));
-    life.toggleBar(isShow: isShow);
+    _life.toggleBar(isShow: isShow);
   }
 }

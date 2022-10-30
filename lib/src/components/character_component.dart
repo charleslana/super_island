@@ -8,7 +8,6 @@ import 'package:super_island/src/components/empty_bar_component.dart';
 import 'package:super_island/src/enums/bar_enum.dart';
 import 'package:super_island/src/enums/character_move_enum.dart';
 import 'package:super_island/src/game/battle_game.dart';
-import 'package:super_island/src/providers/battle_provider.dart';
 
 class CharacterComponent extends SpriteAnimationComponent
     with HasGameRef<BattleGame>, CollisionCallbacks {
@@ -24,24 +23,23 @@ class CharacterComponent extends SpriteAnimationComponent
   final Vector2 characterPosition;
   final bool isFlip;
 
-  Vector2 screenSize = Vector2.all(0);
   Vector2 starterPosition = Vector2.all(0);
-
   final spriteAnimation = SpriteAnimationComponent();
-  bool isDefense = false;
-  TextComponent? textComponent;
-  late EmptyBarComponent lifeBar;
+
+  Vector2 _screenSize = Vector2.all(0);
+  TextComponent? _textComponent;
+  late EmptyBarComponent _lifeBar;
 
   @override
   Future<void>? onLoad() async {
-    screenSize = gameRef.size;
+    _screenSize = gameRef.size;
     _setDataComponent();
     await _setSpriteAnimation(_getStandardSprite());
     if (isFlip) {
       spriteAnimation.flipHorizontallyAroundCenter();
     }
-    lifeBar = EmptyBarComponent(bar: BarEnum.life, flip: isFlip);
-    await spriteAnimation.add(lifeBar);
+    _lifeBar = EmptyBarComponent(bar: BarEnum.life, flip: isFlip);
+    await spriteAnimation.add(_lifeBar);
     await add(spriteAnimation);
     await add(RectangleHitbox());
     return super.onLoad();
@@ -49,12 +47,7 @@ class CharacterComponent extends SpriteAnimationComponent
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    if (other is CharacterComponent &&
-        gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.run) {
-      gameRef.ref.read(battleProvider.notifier)
-        ..move = CharacterMoveEnum.attack
-        ..isAttack = true;
-    }
+    if (other is CharacterComponent) {}
     super.onCollision(intersectionPoints, other);
   }
 
@@ -68,8 +61,6 @@ class CharacterComponent extends SpriteAnimationComponent
         break;
       case CharacterMoveEnum.attack:
         await _setSpriteAnimation(_getAttackSprite());
-        gameRef.ref.read(battleProvider.notifier).move =
-            CharacterMoveEnum.standard;
         break;
       case CharacterMoveEnum.defense:
         await _setSpriteAnimation(_getDefenseSprite());
@@ -86,13 +77,13 @@ class CharacterComponent extends SpriteAnimationComponent
         SpriteAnimationComponent.fromFrameData(sprite, spriteAnimationData);
     spriteAnimation
       ..animation = spriteAnimationComponent.animation
-      ..size = Vector2(256, 224) * (screenSize.y / 800);
+      ..size = Vector2(256, 224) * (_screenSize.y / 800);
   }
 
   void _setDataComponent() {
-    starterPosition = Vector2(characterPosition.x * (screenSize.x / 1),
-        characterPosition.y * (screenSize.y / 1));
-    size = Vector2(256, 224) * (screenSize.y / 800);
+    starterPosition = Vector2(characterPosition.x * (_screenSize.x / 1),
+        characterPosition.y * (_screenSize.y / 1));
+    size = Vector2(256, 224) * (_screenSize.y / 800);
     size.x = size.x / 2;
     position = starterPosition;
   }
@@ -153,24 +144,24 @@ class CharacterComponent extends SpriteAnimationComponent
   }
 
   void setDamage({bool flip = false}) {
-    textComponent = DamageComponent(flip: flip);
-    if (textComponent?.parent != null) {
-      spriteAnimation.remove(textComponent!);
+    _textComponent = DamageComponent(flip: flip);
+    if (_textComponent?.parent != null) {
+      spriteAnimation.remove(_textComponent!);
     }
-    spriteAnimation.add(textComponent!);
+    spriteAnimation.add(_textComponent!);
   }
 
   void removeDamage() {
-    if (textComponent?.parent != null) {
-      spriteAnimation.remove(textComponent!);
+    if (_textComponent?.parent != null) {
+      spriteAnimation.remove(_textComponent!);
     }
   }
 
   void changeLife() {
-    lifeBar.changeLife();
+    _lifeBar.changeLife();
   }
 
   void toggleBar({bool isShow = true}) {
-    lifeBar.toggleBar(isShow: isShow);
+    _lifeBar.toggleBar(isShow: isShow);
   }
 }

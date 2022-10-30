@@ -34,7 +34,7 @@ class LifeBarComponent extends PositionComponent with HasPaint {
   }
 
   void toggleBar({bool isShow = true}) {
-    if (isShow) {
+    if (!isShow) {
       _spriteComponent
           .add(OpacityEffect.fadeOut(EffectController(duration: 0)));
       return;

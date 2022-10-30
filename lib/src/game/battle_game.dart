@@ -56,8 +56,10 @@ class BattleGame extends FlameGame
   void update(double dt) {
     final battleWatch = ref.watch(battleProvider);
     _run(battleWatch);
-    _attack(battleWatch);
-    _validateCollision(battleWatch);
+    _collision(battleWatch);
+    _standard(battleWatch);
+    // _attack(battleWatch);
+    // _validateCollision(battleWatch);
     super.update(dt);
   }
 
@@ -68,67 +70,62 @@ class BattleGame extends FlameGame
 
   Future<void> _run(BattleProvider battleWatch) async {
     if (battleWatch.move == CharacterMoveEnum.run &&
-        !battleWatch.isAttack &&
+        !player1.isColliding &&
         (player1.size.x + player1.x) < size.x) {
       await player1.setSprite(battleWatch.move);
       player1
         ..priority = 1
         ..x += size.x / 70;
-    }
-    _goBack(battleWatch);
-  }
-
-  void _goBack(BattleProvider battleWatch) {
-    if (battleWatch.move == CharacterMoveEnum.standard &&
-        !battleWatch.isAttack &&
-        player1.x > player1.starterPosition.x) {
-      player1.x -= size.x / 70;
+      print('run');
     }
   }
 
-  Future<void> _attack(BattleProvider battleWatch) async {
-    if (battleWatch.move == CharacterMoveEnum.attack) {
+  Future<void> _collision(BattleProvider battleWatch) async {
+    if (player1.isColliding && battleWatch.move == CharacterMoveEnum.run) {
+      ref.read(battleProvider.notifier).move = CharacterMoveEnum.attack;
       await player1.setSprite(CharacterMoveEnum.attack);
-    }
-  }
-
-  void _validateCollision(BattleProvider battleWatch) {
-    if (battleWatch.move == CharacterMoveEnum.standard &&
-        battleWatch.isAttack &&
-        player1.isColliding) {
-      ref.read(battleProvider.notifier).move = CharacterMoveEnum.animation;
-      _defense();
-      player1.spriteAnimation.animation?.onComplete = () async {
-        ref.read(battleProvider.notifier)
-          ..isAttack = false
-          ..move = CharacterMoveEnum.standard;
-        await player1.setSprite(CharacterMoveEnum.standard);
-        await enemy1.setSprite(CharacterMoveEnum.standard);
-        enemy1.isDefense = false;
-      };
-    }
-  }
-
-  Future<void> _defense() async {
-    enemy1.isDefense = true;
-    if (enemy1.isDefense) {
       Future.delayed(const Duration(milliseconds: 300), () async {
-        await enemy1.setSprite(CharacterMoveEnum.defense);
-        enemy1
-          ..setDamageColor()
-          ..removeDamage()
-          ..setDamage(flip: true)
-          ..changeLife();
         await FlameAudio.play('shanks1.wav');
       });
-      Future.delayed(const Duration(milliseconds: 800), () async {
-        enemy1.removeDamage();
-        player1.toggleBar(isShow: false);
-      });
-      enemy1.spriteAnimation.animation?.onComplete = () {
-        enemy1.isDefense = false;
+      print('collision');
+      _defense();
+      player1.spriteAnimation.animation?.onComplete = () async {
+        await player1.setSprite(CharacterMoveEnum.standard);
+        ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
+        print('fim da animação de ataque');
+        Future.delayed(const Duration(milliseconds: 300), () async {
+          player1.toggleBar();
+        });
       };
-      return;
+    }
+  }
+
+  void _defense() {
+    Future.delayed(const Duration(milliseconds: 300), () async {
+      await enemy1.setSprite(CharacterMoveEnum.defense);
+      enemy1
+        ..setDamageColor()
+        ..removeDamage()
+        ..setDamage(flip: true)
+        ..changeLife();
+      enemy1.spriteAnimation.animation?.onComplete = () async {
+        Future.delayed(const Duration(milliseconds: 200), () async {
+          await enemy1.setSprite(CharacterMoveEnum.standard);
+        });
+        Future.delayed(const Duration(milliseconds: 400), () async {
+          enemy1.removeDamage();
+        });
+      };
+    });
+  }
+
+  void _standard(BattleProvider battleWatch) {
+    if (battleWatch.move == CharacterMoveEnum.standard &&
+        player1.x > player1.starterPosition.x) {
+      player1
+        ..priority = 0
+        ..x -= size.x / 70;
+      print('standard');
     }
   }
 

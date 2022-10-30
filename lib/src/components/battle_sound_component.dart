@@ -14,8 +14,8 @@ class BattleSoundComponent extends PositionComponent
     debugMode = false;
     size = Vector2.all(88);
     position =
-        Vector2(gameRef.size.x - gameRef.size.y / 8, gameRef.size.y / 50);
-    scale = Vector2.all(88 * gameRef.size.y / 70000);
+        Vector2(gameRef.size.x - gameRef.size.y / 6, gameRef.size.y / 25);
+    scale = Vector2.all(88 * gameRef.size.y / 60000);
     _soundOn = await Sprite.load('icons/button_sound_on.png');
     _soundOff = await Sprite.load('icons/button_sound_off.png');
     _spriteComponent = SpriteComponent()
