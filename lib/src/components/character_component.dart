@@ -3,6 +3,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
+import 'package:super_island/src/components/battle_shadow_component.dart';
 import 'package:super_island/src/components/damage_component.dart';
 import 'package:super_island/src/components/empty_bar_component.dart';
 import 'package:super_island/src/enums/bar_enum.dart';
@@ -39,23 +40,9 @@ class CharacterComponent extends SpriteAnimationComponent
     if (isFlip) {
       spriteAnimation.flipHorizontallyAroundCenter();
     }
-    _lifeBar = EmptyBarComponent(
-      bar: BarEnum.life,
-      barScale: Vector2.all(gameRef.size.y / 1000 * 2),
-      barPosition:
-          Vector2(gameRef.size.y / 20, (-gameRef.size.y - gameRef.size.y) / 60),
-      barPriority: 1,
-      flip: isFlip,
-    );
-    await spriteAnimation.add(_lifeBar);
-    _rageBar = EmptyBarComponent(
-      barScale: Vector2(gameRef.size.y / 1000 * 2, gameRef.size.y / 1000 * 1.5),
-      barPosition: Vector2(
-          gameRef.size.y / 20, (-gameRef.size.y - gameRef.size.y) / 120),
-      bar: BarEnum.rage,
-      flip: isFlip,
-    );
-    await spriteAnimation.add(_rageBar);
+    await _addLifeBar();
+    await _addRageBar();
+    await spriteAnimation.add(BattleShadowComponent());
     await add(spriteAnimation);
     await add(RectangleHitbox());
     return super.onLoad();
@@ -84,6 +71,49 @@ class CharacterComponent extends SpriteAnimationComponent
       default:
         await _setSpriteAnimation(_getStandardSprite());
     }
+  }
+
+  void setDamageColor() {
+    spriteAnimation.add(
+      ColorEffect(
+        Colors.white,
+        const Offset(
+          0,
+          1,
+        ),
+        EffectController(
+          duration: 0.1,
+          reverseDuration: 0.1,
+        ),
+      ),
+    );
+  }
+
+  void setDamage({bool flip = false}) {
+    _textComponent = DamageComponent(flip: flip);
+    if (_textComponent?.parent != null) {
+      spriteAnimation.remove(_textComponent!);
+    }
+    spriteAnimation.add(_textComponent!);
+  }
+
+  void removeDamage() {
+    if (_textComponent?.parent != null) {
+      spriteAnimation.remove(_textComponent!);
+    }
+  }
+
+  void changeLife(int size) {
+    _lifeBar.changeLife(size);
+  }
+
+  void toggleBar({bool isShow = true}) {
+    _lifeBar.toggleBar(isShow: isShow);
+    _rageBar.toggleBar(isShow: isShow);
+  }
+
+  void changeRage(int size) {
+    _rageBar.changeRage(size);
   }
 
   Future<void> _setSpriteAnimation(
@@ -143,46 +173,26 @@ class CharacterComponent extends SpriteAnimationComponent
     );
   }
 
-  void setDamageColor() {
-    spriteAnimation.add(
-      ColorEffect(
-        Colors.white,
-        const Offset(
-          0,
-          1,
-        ),
-        EffectController(
-          duration: 0.1,
-          reverseDuration: 0.1,
-        ),
-      ),
+  Future<void> _addRageBar() async {
+    _rageBar = EmptyBarComponent(
+      barScale: Vector2(gameRef.size.y / 1000 * 2, gameRef.size.y / 1000 * 1.5),
+      barPosition: Vector2(
+          gameRef.size.y / 20, (-gameRef.size.y - gameRef.size.y) / 120),
+      bar: BarEnum.rage,
+      flip: isFlip,
     );
+    await spriteAnimation.add(_rageBar);
   }
 
-  void setDamage({bool flip = false}) {
-    _textComponent = DamageComponent(flip: flip);
-    if (_textComponent?.parent != null) {
-      spriteAnimation.remove(_textComponent!);
-    }
-    spriteAnimation.add(_textComponent!);
-  }
-
-  void removeDamage() {
-    if (_textComponent?.parent != null) {
-      spriteAnimation.remove(_textComponent!);
-    }
-  }
-
-  void changeLife(int size) {
-    _lifeBar.changeLife(size);
-  }
-
-  void toggleBar({bool isShow = true}) {
-    _lifeBar.toggleBar(isShow: isShow);
-    _rageBar.toggleBar(isShow: isShow);
-  }
-
-  void changeRage(int size) {
-    _rageBar.changeRage(size);
+  Future<void> _addLifeBar() async {
+    _lifeBar = EmptyBarComponent(
+      bar: BarEnum.life,
+      barScale: Vector2.all(gameRef.size.y / 1000 * 2),
+      barPosition:
+          Vector2(gameRef.size.y / 20, (-gameRef.size.y - gameRef.size.y) / 60),
+      barPriority: 1,
+      flip: isFlip,
+    );
+    await spriteAnimation.add(_lifeBar);
   }
 }

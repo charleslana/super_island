@@ -29,7 +29,7 @@ class BattleGame extends FlameGame
 
   @override
   Future<void>? onLoad() async {
-    await loadBattleAudio();
+    // await loadBattleAudio();
 
     await add(BattleBgComponent());
     await add(BattleSoundComponent());
