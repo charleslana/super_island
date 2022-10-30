@@ -23,7 +23,7 @@ class EmptyBarComponent extends PositionComponent
   final int barPriority;
   final bool flip;
 
-  late SpriteComponent _spriteComponent;
+  SpriteComponent _spriteComponent = SpriteComponent();
   LifeBarComponent _life = LifeBarComponent();
   RageBarComponent _rage = RageBarComponent();
 

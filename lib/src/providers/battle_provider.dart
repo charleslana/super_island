@@ -12,6 +12,8 @@ class BattleProvider extends ValueNotifier<dynamic> {
 
   CharacterMoveEnum move;
 
+  late int start;
+
   Future<void> toggleAudio({bool playAudio = true}) async {
     if (playAudio) {
       await FlameAudio.bgm.play('bgm_wano.mp3', volume: .50);

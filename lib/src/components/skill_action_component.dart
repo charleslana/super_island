@@ -7,11 +7,13 @@ import 'package:super_island/src/providers/battle_provider.dart';
 
 class SkillActionComponent extends PositionComponent
     with HasGameRef<BattleGame>, TapCallbacks {
-  SkillActionComponent()
+  SkillActionComponent(this.order)
       : super(
           anchor: Anchor.center,
           size: Vector2.all(100),
         );
+
+  final int order;
 
   final _paint = Paint()..color = const Color(0xffffffff);
 
@@ -20,7 +22,7 @@ class SkillActionComponent extends PositionComponent
     super.onGameResize(size);
     position
       ..y = size.y / 1.15
-      ..x = size.x / 10 * 1;
+      ..x = size.x / 10 * order;
     this.size = Vector2(size.x / 10, size.y / 5);
     _paint.color = Colors.deepPurple;
   }
@@ -31,9 +33,10 @@ class SkillActionComponent extends PositionComponent
     const textStyle = TextStyle(
       color: Colors.black,
       fontSize: 30,
+      decoration: TextDecoration.underline,
     );
-    const textSpan = TextSpan(
-      text: 'Skill text',
+    final textSpan = TextSpan(
+      text: '$order',
       style: textStyle,
     );
     final textPainter = TextPainter(
@@ -54,8 +57,9 @@ class SkillActionComponent extends PositionComponent
   @override
   void onTapUp(TapUpEvent event) {
     if (gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.standard) {
-      gameRef.ref.read(battleProvider.notifier).move = CharacterMoveEnum.run;
-      gameRef.player1.toggleBar(isShow: false);
+      gameRef.ref.read(battleProvider.notifier)
+        ..move = CharacterMoveEnum.run
+        ..start = order;
     }
     super.onTapUp(event);
   }

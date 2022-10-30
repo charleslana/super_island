@@ -9,19 +9,25 @@ import 'package:super_island/src/components/empty_bar_component.dart';
 import 'package:super_island/src/enums/bar_enum.dart';
 import 'package:super_island/src/enums/character_move_enum.dart';
 import 'package:super_island/src/game/battle_game.dart';
+import 'package:super_island/src/models/character_model.dart';
 
 class CharacterComponent extends SpriteAnimationComponent
     with HasGameRef<BattleGame>, CollisionCallbacks {
   CharacterComponent({
-    required this.characterImage,
+    required this.character,
     required this.characterPosition,
+    required this.characterPriority,
+    this.collisionType = CollisionType.active,
     this.isFlip = false,
   }) : super() {
+    priority = 1;
     debugMode = false;
   }
 
-  final String characterImage;
+  final CharacterModel character;
   final Vector2 characterPosition;
+  final int characterPriority;
+  final CollisionType collisionType;
   final bool isFlip;
 
   Vector2 starterPosition = Vector2.all(0);
@@ -34,9 +40,10 @@ class CharacterComponent extends SpriteAnimationComponent
 
   @override
   Future<void>? onLoad() async {
+    priority = characterPriority;
     _screenSize = gameRef.size;
     _setDataComponent();
-    await _setSpriteAnimation(_getStandardSprite());
+    await _setSpriteAnimation(character.standard);
     if (isFlip) {
       spriteAnimation.flipHorizontallyAroundCenter();
     }
@@ -44,7 +51,7 @@ class CharacterComponent extends SpriteAnimationComponent
     await _addRageBar();
     await spriteAnimation.add(BattleShadowComponent());
     await add(spriteAnimation);
-    await add(RectangleHitbox());
+    await add(RectangleHitbox()..collisionType = collisionType);
     return super.onLoad();
   }
 
@@ -57,19 +64,22 @@ class CharacterComponent extends SpriteAnimationComponent
   Future<void> setSprite(CharacterMoveEnum move) async {
     switch (move) {
       case CharacterMoveEnum.standard:
-        await _setSpriteAnimation(_getStandardSprite());
+        await _setSpriteAnimation(character.standard);
         break;
       case CharacterMoveEnum.run:
-        await _setSpriteAnimation(_getRunSprite());
+        await _setSpriteAnimation(character.run);
         break;
       case CharacterMoveEnum.attack:
-        await _setSpriteAnimation(_getAttackSprite());
+        await _setSpriteAnimation(character.attack);
         break;
       case CharacterMoveEnum.defense:
-        await _setSpriteAnimation(_getDefenseSprite());
+        await _setSpriteAnimation(character.defense);
+        break;
+      case CharacterMoveEnum.special:
+        await _setSpriteAnimation(character.special);
         break;
       default:
-        await _setSpriteAnimation(_getStandardSprite());
+        await _setSpriteAnimation(character.standard);
     }
   }
 
@@ -118,59 +128,20 @@ class CharacterComponent extends SpriteAnimationComponent
 
   Future<void> _setSpriteAnimation(
       SpriteAnimationData spriteAnimationData) async {
-    final sprite = await Images().load(characterImage);
+    final sprite = await Images().load(character.image);
     final spriteAnimationComponent =
         SpriteAnimationComponent.fromFrameData(sprite, spriteAnimationData);
     spriteAnimation
       ..animation = spriteAnimationComponent.animation
-      ..size = Vector2(256, 224) * (_screenSize.y / 800);
+      ..size = character.size * (_screenSize.y / 800);
   }
 
   void _setDataComponent() {
     starterPosition = Vector2(characterPosition.x * (_screenSize.x / 1),
         characterPosition.y * (_screenSize.y / 1));
-    size = Vector2(256, 224) * (_screenSize.y / 800);
+    size = character.size * (_screenSize.y / 800);
     size.x = size.x / 2;
     position = starterPosition;
-  }
-
-  SpriteAnimationData _getStandardSprite() {
-    return SpriteAnimationData.sequenced(
-      amount: 4,
-      stepTime: 0.1,
-      textureSize: Vector2(256, 224),
-      texturePosition: Vector2(0, 0),
-    );
-  }
-
-  SpriteAnimationData _getRunSprite() {
-    return SpriteAnimationData.sequenced(
-      amount: 1,
-      stepTime: 0.1,
-      textureSize: Vector2(256, 224),
-      texturePosition: Vector2(0, 256),
-      loop: false,
-    );
-  }
-
-  SpriteAnimationData _getAttackSprite() {
-    return SpriteAnimationData.sequenced(
-      amount: 2,
-      stepTime: 0.3,
-      textureSize: Vector2(256, 224),
-      texturePosition: Vector2(500, 250),
-      loop: false,
-    );
-  }
-
-  SpriteAnimationData _getDefenseSprite() {
-    return SpriteAnimationData.sequenced(
-      amount: 1,
-      stepTime: 0.1,
-      textureSize: Vector2(256, 224),
-      texturePosition: Vector2(256, 235),
-      loop: false,
-    );
   }
 
   Future<void> _addRageBar() async {

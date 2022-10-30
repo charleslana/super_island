@@ -3,11 +3,13 @@ import 'package:super_island/src/game/battle_game.dart';
 
 class BattleShadowComponent extends PositionComponent
     with HasGameRef<BattleGame> {
+  BattleShadowComponent() : super() {
+    debugMode = false;
+  }
   late SpriteComponent _spriteComponent;
 
   @override
   Future<void>? onLoad() async {
-    debugMode = false;
     size = Vector2(85, 53);
     scale = Vector2(85 * gameRef.size.y / 60000, 53 * gameRef.size.y / 60000);
     position = Vector2(gameRef.size.y / 10, gameRef.size.y / 4.5);
