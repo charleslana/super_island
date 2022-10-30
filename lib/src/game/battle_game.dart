@@ -83,7 +83,7 @@ class BattleGame extends FlameGame
       player
         ..toggleBar(isShow: false)
         ..priority = 4
-        ..x += size.x / 70;
+        ..x += size.x / 60;
       if (player.characterPosition.y < enemy.characterPosition.y) {
         player.y += enemy.characterPosition.y / 0.15;
       }
@@ -144,7 +144,7 @@ class BattleGame extends FlameGame
         (player.x - 1) > player.starterPosition.x) {
       player
         ..priority = player.characterPriority
-        ..x -= size.x / 70;
+        ..x -= size.x / 60;
       if (player.characterPosition.y < enemy.characterPosition.y) {
         player.y -= enemy.characterPosition.y / 0.15;
       }
