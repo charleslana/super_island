@@ -92,7 +92,9 @@ class BattleGame extends FlameGame
         ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
         print('fim da animação de ataque');
         Future.delayed(const Duration(milliseconds: 300), () async {
-          player1.toggleBar();
+          player1
+            ..changeRage(10)
+            ..toggleBar();
         });
       };
     }
@@ -105,7 +107,8 @@ class BattleGame extends FlameGame
         ..setDamageColor()
         ..removeDamage()
         ..setDamage(flip: true)
-        ..changeLife();
+        ..changeLife(25)
+        ..changeRage(50);
       enemy1.spriteAnimation.animation?.onComplete = () async {
         Future.delayed(const Duration(milliseconds: 200), () async {
           await enemy1.setSprite(CharacterMoveEnum.standard);

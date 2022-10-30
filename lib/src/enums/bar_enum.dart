@@ -1,4 +1,4 @@
 enum BarEnum {
   life,
-  fury,
+  rage,
 }

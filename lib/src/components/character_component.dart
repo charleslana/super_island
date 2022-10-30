@@ -29,6 +29,7 @@ class CharacterComponent extends SpriteAnimationComponent
   Vector2 _screenSize = Vector2.all(0);
   TextComponent? _textComponent;
   late EmptyBarComponent _lifeBar;
+  late EmptyBarComponent _rageBar;
 
   @override
   Future<void>? onLoad() async {
@@ -38,8 +39,23 @@ class CharacterComponent extends SpriteAnimationComponent
     if (isFlip) {
       spriteAnimation.flipHorizontallyAroundCenter();
     }
-    _lifeBar = EmptyBarComponent(bar: BarEnum.life, flip: isFlip);
+    _lifeBar = EmptyBarComponent(
+      bar: BarEnum.life,
+      barScale: Vector2.all(gameRef.size.y / 1000 * 2),
+      barPosition:
+          Vector2(gameRef.size.y / 20, (-gameRef.size.y - gameRef.size.y) / 60),
+      barPriority: 1,
+      flip: isFlip,
+    );
     await spriteAnimation.add(_lifeBar);
+    _rageBar = EmptyBarComponent(
+      barScale: Vector2(gameRef.size.y / 1000 * 2, gameRef.size.y / 1000 * 1.5),
+      barPosition: Vector2(
+          gameRef.size.y / 20, (-gameRef.size.y - gameRef.size.y) / 120),
+      bar: BarEnum.rage,
+      flip: isFlip,
+    );
+    await spriteAnimation.add(_rageBar);
     await add(spriteAnimation);
     await add(RectangleHitbox());
     return super.onLoad();
@@ -157,11 +173,16 @@ class CharacterComponent extends SpriteAnimationComponent
     }
   }
 
-  void changeLife() {
-    _lifeBar.changeLife();
+  void changeLife(int size) {
+    _lifeBar.changeLife(size);
   }
 
   void toggleBar({bool isShow = true}) {
     _lifeBar.toggleBar(isShow: isShow);
+    _rageBar.toggleBar(isShow: isShow);
+  }
+
+  void changeRage(int size) {
+    _rageBar.changeRage(size);
   }
 }

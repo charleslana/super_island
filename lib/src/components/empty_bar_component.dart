@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:super_island/src/components/life_bar_component.dart';
+import 'package:super_island/src/components/rage_bar_component.dart';
 import 'package:super_island/src/enums/bar_enum.dart';
 import 'package:super_island/src/game/battle_game.dart';
 
@@ -8,25 +9,32 @@ class EmptyBarComponent extends PositionComponent
     with HasGameRef<BattleGame>, HasPaint {
   EmptyBarComponent({
     required this.bar,
+    required this.barScale,
+    required this.barPosition,
+    this.barPriority = 0,
     this.flip = false,
   }) : super() {
     debugMode = false;
   }
 
   final BarEnum bar;
+  final Vector2 barScale;
+  final Vector2 barPosition;
+  final int barPriority;
   final bool flip;
 
   late SpriteComponent _spriteComponent;
-  late LifeBarComponent _life;
+  LifeBarComponent _life = LifeBarComponent();
+  RageBarComponent _rage = RageBarComponent();
 
   @override
   Future<void>? onLoad() async {
+    priority = barPriority;
     _spriteComponent = SpriteComponent()
       ..sprite = await Sprite.load('bar/bar_empty.png')
       ..size = Vector2(100, 10)
-      ..position =
-          Vector2(gameRef.size.y / 20, (-gameRef.size.y - gameRef.size.y) / 60)
-      ..scale = Vector2.all(gameRef.size.y / 1000 * 2);
+      ..position = barPosition
+      ..scale = barScale;
     if (flip) {
       _spriteComponent.flipHorizontallyAroundCenter();
     }
@@ -41,14 +49,20 @@ class EmptyBarComponent extends PositionComponent
         _life = LifeBarComponent();
         await _spriteComponent.add(_life);
         break;
-      case BarEnum.fury:
+      case BarEnum.rage:
+        _rage = RageBarComponent();
+        await _spriteComponent.add(_rage);
         break;
       default:
     }
   }
 
-  void changeLife() {
-    _life.changeSize();
+  void changeLife(int size) {
+    _life.changeSize(size);
+  }
+
+  void changeRage(int size) {
+    _rage.changeSize(size);
   }
 
   void toggleBar({bool isShow = true}) {
@@ -56,9 +70,11 @@ class EmptyBarComponent extends PositionComponent
       _spriteComponent
           .add(OpacityEffect.fadeOut(EffectController(duration: 0)));
       _life.toggleBar(isShow: isShow);
+      _rage.toggleBar(isShow: isShow);
       return;
     }
     _spriteComponent.add(OpacityEffect.fadeIn(EffectController(duration: 0)));
     _life.toggleBar(isShow: isShow);
+    _rage.toggleBar(isShow: isShow);
   }
 }
