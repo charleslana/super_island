@@ -58,8 +58,6 @@ class BattleGame extends FlameGame
     _run(battleWatch);
     _collision(battleWatch);
     _standard(battleWatch);
-    // _attack(battleWatch);
-    // _validateCollision(battleWatch);
     super.update(dt);
   }
 
