@@ -56,23 +56,20 @@ class SkillActionComponent extends PositionComponent
 
   @override
   void onTapUp(TapUpEvent event) {
+    if (order == 7) {
+      if (gameRef.ref.watch(battleProvider).hit >= 6) {
+        gameRef.ref.read(battleProvider.notifier).hit = 1;
+        return;
+      }
+      gameRef.ref.read(battleProvider.notifier).hit++;
+      return;
+    }
     if (gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.standard) {
       gameRef.ref.read(battleProvider.notifier)
-        ..move = CharacterMoveEnum.run
-        ..start = order;
+        ..start = order
+        ..move = CharacterMoveEnum.run;
+      gameRef.move();
     }
     super.onTapUp(event);
   }
-
-  // @override
-  // void onTapDown(TapDownEvent event) {
-  //   // print('tap down');
-  //   super.onTapDown(event);
-  // }
-
-  // @override
-  // void onTapCancel(TapCancelEvent event) {
-  //   // print('tap cancel');
-  //   super.onTapCancel(event);
-  // }
 }

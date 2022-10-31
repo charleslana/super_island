@@ -1,4 +1,5 @@
 import 'package:flame/collisions.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -55,18 +56,10 @@ class BattleGame extends FlameGame
     await add(SkillActionComponent(4));
     await add(SkillActionComponent(5));
     await add(SkillActionComponent(6));
+    await add(SkillActionComponent(7));
     player = player3;
-    enemy = enemy2;
+    enemy = enemy3;
     return super.onLoad();
-  }
-
-  @override
-  void update(double dt) {
-    final battleWatch = ref.watch(battleProvider);
-    _run(battleWatch);
-    _collision(battleWatch);
-    _standard(battleWatch);
-    super.update(dt);
   }
 
   @override
@@ -74,85 +67,60 @@ class BattleGame extends FlameGame
     FlameAudio.bgm.dispose();
   }
 
-  Future<void> _run(BattleProvider battleWatch) async {
-    if (battleWatch.move == CharacterMoveEnum.run &&
-        !player.isColliding &&
-        (player.size.x + player.x) < size.x) {
-      _startPlayer(battleWatch.start);
-      await player.setSprite(battleWatch.move);
-      player
-        ..toggleBar(isShow: false)
-        ..priority = 4
-        ..x += size.x / 60;
-      if (player.characterPosition.y < enemy.characterPosition.y) {
-        player.y += enemy.characterPosition.y / 0.15;
-      }
-      if (player.characterPosition.y > enemy.characterPosition.y) {
-        player.y -= enemy.characterPosition.y / 0.15;
-      }
-      print('run');
-    }
+  Future<void> move() async {
+    _startPlayer(ref.watch(battleProvider).start);
+    _hitPlayer(ref.watch(battleProvider).hit);
+    await player.setSprite(CharacterMoveEnum.run);
+    player
+      ..priority = 4
+      ..toggleBar(isShow: false);
+    await player.add(
+      MoveToEffect(
+        Vector2(enemy.position.x - size.x / 15, enemy.position.y),
+        EffectController(duration: 0.5),
+      )..onComplete = () async {
+          await _attack();
+        },
+    );
   }
 
-  Future<void> _collision(BattleProvider battleWatch) async {
-    if (player.isColliding && battleWatch.move == CharacterMoveEnum.run) {
-      ref.read(battleProvider.notifier).move = CharacterMoveEnum.attack;
-      await player.setSprite(CharacterMoveEnum.attack);
-      Future.delayed(const Duration(milliseconds: 300), () async {
-        await FlameAudio.play('shanks1.wav');
-      });
-      print('collision');
-      _defense();
-      player.spriteAnimation.animation?.onComplete = () async {
-        await player.setSprite(CharacterMoveEnum.standard);
-        ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
-        print('fim da animação de ataque');
-        Future.delayed(const Duration(milliseconds: 300), () async {
-          player
-            ..changeRage(10)
-            ..toggleBar();
-        });
-      };
-    }
-  }
-
-  void _defense() {
+  Future<void> _attack() async {
+    await player.setSprite(CharacterMoveEnum.attack);
     Future.delayed(const Duration(milliseconds: 300), () async {
-      await enemy.setSprite(CharacterMoveEnum.defense);
-      enemy
-        ..priority = 1
-        ..setDamageColor()
-        ..removeDamage()
-        ..setDamage(flip: true)
-        ..changeLife(25)
-        ..changeRage(50);
-      enemy.spriteAnimation.animation?.onComplete = () async {
-        Future.delayed(const Duration(milliseconds: 200), () async {
-          await enemy.setSprite(CharacterMoveEnum.standard);
-        });
-        Future.delayed(const Duration(milliseconds: 400), () async {
-          enemy
-            ..priority = 1
-            ..removeDamage();
-        });
-      };
+      await FlameAudio.play('shanks1.wav');
+      await _defense();
     });
   }
 
-  void _standard(BattleProvider battleWatch) {
-    if (battleWatch.move == CharacterMoveEnum.standard &&
-        (player.x - 1) > player.starterPosition.x) {
-      player
-        ..priority = player.characterPriority
-        ..x -= size.x / 60;
-      if (player.characterPosition.y < enemy.characterPosition.y) {
-        player.y -= enemy.characterPosition.y / 0.15;
-      }
-      if (player.characterPosition.y > enemy.characterPosition.y) {
-        player.y += enemy.characterPosition.y / 0.15;
-      }
-      print('standard');
-    }
+  Future<void> _defense() async {
+    await enemy.setSprite(CharacterMoveEnum.defense);
+    enemy
+      ..setDamageColor()
+      ..removeDamage()
+      ..setDamage(flip: true)
+      ..changeLife(25)
+      ..changeRage(50);
+    Future.delayed(const Duration(milliseconds: 400), () async {
+      enemy.removeDamage();
+      await enemy.setSprite(CharacterMoveEnum.standard);
+      await _standard();
+    });
+  }
+
+  Future<void> _standard() async {
+    await player.setSprite(CharacterMoveEnum.standard);
+    await player.add(
+      MoveToEffect(
+        player.starterPosition,
+        EffectController(duration: 0.5),
+      )..onComplete = () async {
+          player
+            ..priority = player.characterPriority
+            ..changeRage(10)
+            ..toggleBar();
+          ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
+        },
+    );
   }
 
   Future<void> _loadBattleAudio() async {
@@ -216,7 +184,7 @@ class BattleGame extends FlameGame
     enemy1 = CharacterComponent(
       character: SpriteData.shanks2(),
       characterPosition: right1,
-      characterPriority: 1,
+      characterPriority: 0,
       isFlip: true,
     );
     await add(enemy1);
@@ -224,7 +192,7 @@ class BattleGame extends FlameGame
     enemy2 = CharacterComponent(
       character: SpriteData.shanks2(),
       characterPosition: right2,
-      characterPriority: 2,
+      characterPriority: 1,
       isFlip: true,
     );
     await add(enemy2);
@@ -232,7 +200,7 @@ class BattleGame extends FlameGame
     enemy3 = CharacterComponent(
       character: SpriteData.shanks2(),
       characterPosition: right3,
-      characterPriority: 3,
+      characterPriority: 2,
       isFlip: true,
     );
     await add(enemy3);
@@ -240,7 +208,7 @@ class BattleGame extends FlameGame
     enemy4 = CharacterComponent(
       character: SpriteData.shanks2(),
       characterPosition: right4,
-      characterPriority: 0,
+      characterPriority: 1,
       isFlip: true,
     );
     await add(enemy4);
@@ -248,7 +216,7 @@ class BattleGame extends FlameGame
     enemy5 = CharacterComponent(
       character: SpriteData.shanks2(),
       characterPosition: right5,
-      characterPriority: 1,
+      characterPriority: 2,
       isFlip: true,
     );
     await add(enemy5);
@@ -256,7 +224,7 @@ class BattleGame extends FlameGame
     enemy6 = CharacterComponent(
       character: SpriteData.shanks2(),
       characterPosition: right6,
-      characterPriority: 2,
+      characterPriority: 3,
       isFlip: true,
     );
     await add(enemy6);
@@ -281,6 +249,30 @@ class BattleGame extends FlameGame
         break;
       case 6:
         player = player6;
+        break;
+      default:
+    }
+  }
+
+  void _hitPlayer(int value) {
+    switch (value) {
+      case 1:
+        enemy = enemy1;
+        break;
+      case 2:
+        enemy = enemy2;
+        break;
+      case 3:
+        enemy = enemy3;
+        break;
+      case 4:
+        enemy = enemy4;
+        break;
+      case 5:
+        enemy = enemy5;
+        break;
+      case 6:
+        enemy = enemy6;
         break;
       default:
     }
