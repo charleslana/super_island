@@ -65,6 +65,13 @@ class SkillActionComponent extends PositionComponent
       return;
     }
     if (gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.standard) {
+      if (order == 4) {
+        gameRef.ref.read(battleProvider.notifier)
+          ..start = order
+          ..move = CharacterMoveEnum.run;
+        gameRef.area();
+        return;
+      }
       gameRef.ref.read(battleProvider.notifier)
         ..start = order
         ..move = CharacterMoveEnum.run;

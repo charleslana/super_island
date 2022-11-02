@@ -48,26 +48,25 @@ class SpriteData {
   static CharacterModel crocodile1() {
     return CharacterModel(
       image: 'characters/crocodile1.png',
-      size: Vector2(256, 224),
+      size: Vector2(192, 224),
       standard: SpriteAnimationData.sequenced(
         amount: 4,
         stepTime: 0.1,
-        textureSize: Vector2(256, 224),
-        texturePosition: Vector2(0, 0),
+        textureSize: Vector2(192, 224),
+        texturePosition: Vector2(-35, 0),
       ),
       run: SpriteAnimationData.sequenced(
-        amount: 1,
-        stepTime: 0.1,
-        textureSize: Vector2(256, 224),
-        texturePosition: Vector2(0, 256),
+        amount: 2,
+        stepTime: 0.3,
+        textureSize: Vector2(192, 224),
+        texturePosition: Vector2(-20, 408),
         loop: false,
       ),
       attack: SpriteAnimationData.sequenced(
         amount: 2,
         stepTime: 0.3,
-        textureSize: Vector2(256, 224),
-        texturePosition: Vector2(500, 250),
-        loop: false,
+        textureSize: Vector2(192, 224),
+        texturePosition: Vector2(410, 408),
       ),
       defense: SpriteAnimationData.sequenced(
         amount: 1,

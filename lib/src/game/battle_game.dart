@@ -6,6 +6,7 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:super_island/src/components/battle_bg_component.dart';
+import 'package:super_island/src/components/battle_skill_area_component.dart';
 import 'package:super_island/src/components/battle_sound_component.dart';
 import 'package:super_island/src/components/character_component.dart';
 import 'package:super_island/src/components/skill_action_component.dart';
@@ -57,8 +58,8 @@ class BattleGame extends FlameGame
     await add(SkillActionComponent(5));
     await add(SkillActionComponent(6));
     await add(SkillActionComponent(7));
-    player = player3;
-    enemy = enemy3;
+    player = player1;
+    enemy = enemy1;
     return super.onLoad();
   }
 
@@ -82,6 +83,50 @@ class BattleGame extends FlameGame
           await _attack();
         },
     );
+  }
+
+  Future<void> area() async {
+    _startPlayer(ref.watch(battleProvider).start);
+    _hitPlayer(ref.watch(battleProvider).hit);
+    await player.setSprite(CharacterMoveEnum.run);
+    final battleSkillAreaComponent =
+        BattleSkillAreaComponent(character: player.character);
+    await add(battleSkillAreaComponent);
+    await FlameAudio.play('crocodile1.wav');
+    await _defenseAll();
+    player.spriteAnimation.animation?.onComplete = () async {
+      await player.setSprite(CharacterMoveEnum.standard);
+      player
+        ..changeRage(10)
+        ..toggleBar();
+      ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
+      await battleSkillAreaComponent.hideArea();
+    };
+  }
+
+  Future<void> _defenseAll() async {
+    final enemies = [
+      enemy1,
+      enemy2,
+      enemy3,
+      enemy4,
+      enemy5,
+      enemy6,
+    ];
+    for (final e in enemies) {
+      await e.setSprite(CharacterMoveEnum.defense);
+      e
+        ..setDamageColor()
+        ..removeDamage()
+        ..setDamage(flip: true)
+        ..changeLife(25)
+        ..changeRage(50);
+      Future.delayed(const Duration(milliseconds: 500), () async {
+        await e.setSprite(CharacterMoveEnum.standard);
+        e.removeDamage();
+        await e.setSprite(CharacterMoveEnum.standard);
+      });
+    }
   }
 
   Future<void> _attack() async {
@@ -156,7 +201,7 @@ class BattleGame extends FlameGame
     await add(player3);
 
     player4 = CharacterComponent(
-      character: SpriteData.shanks2(),
+      character: SpriteData.crocodile1(),
       characterPosition: left4,
       characterPriority: 0,
       collisionType: CollisionType.passive,
