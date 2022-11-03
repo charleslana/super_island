@@ -89,10 +89,11 @@ class SpriteData {
         loop: false,
       ),
       attack: SpriteAnimationData.sequenced(
-        amount: 2,
+        amount: 1,
         stepTime: 0.3,
-        textureSize: Vector2(192, 224),
-        texturePosition: Vector2(410, 408),
+        textureSize: Vector2(150, 200),
+        texturePosition: Vector2(675, 554),
+        loop: false,
       ),
       defense: SpriteAnimationData.sequenced(
         amount: 1,

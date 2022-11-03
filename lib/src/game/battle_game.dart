@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:super_island/src/components/battle_bg_component.dart';
 import 'package:super_island/src/components/battle_skill_area_component.dart';
+import 'package:super_island/src/components/battle_skill_magic_component.dart';
 import 'package:super_island/src/components/battle_sound_component.dart';
 import 'package:super_island/src/components/character_component.dart';
 import 'package:super_island/src/components/character_position_component.dart';
@@ -43,7 +44,7 @@ class BattleGame extends FlameGame with HasTappableComponents {
 
   @override
   Future<void>? onLoad() async {
-    // await _loadBattleAudio();
+    await _loadBattleAudio();
     await add(BattleBgComponent());
     await add(BattleSoundComponent());
     await _addPlayers();
@@ -104,6 +105,23 @@ class BattleGame extends FlameGame with HasTappableComponents {
     _startPlayer(ref.watch(battleProvider).start);
     _hitPlayer(ref.watch(battleProvider).hit);
     await player.character.setSprite(CharacterMoveEnum.run);
+    player.character.spriteAnimation.animation?.onComplete = () async {
+      final battleSkillMagicComponent = BattleSkillMagicComponent(
+        character: player.character.model,
+        characterPosition: player.position,
+      );
+      await add(battleSkillMagicComponent);
+      await FlameAudio.play(player.character.model.audio);
+      await battleSkillMagicComponent.add(
+        MoveToEffect(
+          Vector2(enemy.position.x - (size.y / 3), enemy.position.y),
+          EffectController(duration: 0.5),
+        )..onComplete = () async {
+            await _defense();
+            await battleSkillMagicComponent.hideMagic();
+          },
+      );
+    };
   }
 
   Future<void> _defenseAll() async {
