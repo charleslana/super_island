@@ -11,7 +11,6 @@ class EmptyBarComponent extends PositionComponent
     required this.bar,
     required this.barScale,
     required this.barPosition,
-    this.barPriority = 0,
     this.flip = false,
   }) : super() {
     debugMode = false;
@@ -20,7 +19,6 @@ class EmptyBarComponent extends PositionComponent
   final BarEnum bar;
   final Vector2 barScale;
   final Vector2 barPosition;
-  final int barPriority;
   final bool flip;
 
   SpriteComponent _spriteComponent = SpriteComponent();
@@ -29,7 +27,6 @@ class EmptyBarComponent extends PositionComponent
 
   @override
   Future<void>? onLoad() async {
-    priority = barPriority;
     _spriteComponent = SpriteComponent()
       ..sprite = await Sprite.load('bar/bar_empty.png')
       ..size = Vector2(100, 10)

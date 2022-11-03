@@ -71,8 +71,8 @@ class SpriteData {
       defense: SpriteAnimationData.sequenced(
         amount: 1,
         stepTime: 0.1,
-        textureSize: Vector2(256, 224),
-        texturePosition: Vector2(256, 235),
+        textureSize: Vector2(192, 200),
+        texturePosition: Vector2(270, 215),
         loop: false,
       ),
       special: SpriteAnimationData.sequenced(

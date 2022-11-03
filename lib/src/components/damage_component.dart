@@ -31,7 +31,7 @@ class DamageComponent extends TextComponent {
     final textPaint = TextPaint(
       style: TextStyle(
         color: Colors.red,
-        fontSize: size.x / 4,
+        fontSize: size.y / 2,
         fontFamily: 'PoetsenOne',
         shadows: const [
           Shadow(offset: Offset(-1.5, -1.5)),
