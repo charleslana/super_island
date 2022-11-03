@@ -43,7 +43,7 @@ class BattleGame extends FlameGame with HasTappableComponents {
 
   @override
   Future<void>? onLoad() async {
-    await _loadBattleAudio();
+    // await _loadBattleAudio();
     await add(BattleBgComponent());
     await add(BattleSoundComponent());
     await _addPlayers();
@@ -73,7 +73,7 @@ class BattleGame extends FlameGame with HasTappableComponents {
       ..toggleBar(isShow: false);
     await player.add(
       MoveToEffect(
-        Vector2(enemy.position.x - size.x / 5, enemy.position.y),
+        Vector2(enemy.position.x - (size.y / 2.2), enemy.position.y),
         EffectController(duration: 0.5),
       )..onComplete = () async {
           await _attack();
@@ -98,6 +98,12 @@ class BattleGame extends FlameGame with HasTappableComponents {
       ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
       await battleSkillAreaComponent.hideArea();
     };
+  }
+
+  Future<void> magic() async {
+    _startPlayer(ref.watch(battleProvider).start);
+    _hitPlayer(ref.watch(battleProvider).hit);
+    await player.character.setSprite(CharacterMoveEnum.run);
   }
 
   Future<void> _defenseAll() async {
@@ -217,7 +223,7 @@ class BattleGame extends FlameGame with HasTappableComponents {
     await add(player5);
 
     player6 = CharacterPositionComponent(
-      character: CharacterComponent(SpriteData.crocodile1()),
+      character: CharacterComponent(SpriteData.enel1()),
       characterPosition: 6,
       characterPriority: 3,
     );
@@ -266,7 +272,7 @@ class BattleGame extends FlameGame with HasTappableComponents {
     await add(enemy5);
 
     enemy6 = CharacterPositionComponent(
-      character: CharacterComponent(SpriteData.crocodile1()),
+      character: CharacterComponent(SpriteData.enel1()),
       characterPosition: 12,
       characterPriority: 3,
       isFlip: true,

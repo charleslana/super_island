@@ -65,16 +65,17 @@ class SkillActionComponent extends PositionComponent
       return;
     }
     if (gameRef.ref.watch(battleProvider).move == CharacterMoveEnum.standard) {
-      if (order >= 4) {
-        gameRef.ref.read(battleProvider.notifier)
-          ..start = order
-          ..move = CharacterMoveEnum.run;
+      gameRef.ref.read(battleProvider.notifier)..start = order;
+      // ..move = CharacterMoveEnum.run;
+
+      if (order >= 4 && order < 6) {
         gameRef.area();
         return;
       }
-      gameRef.ref.read(battleProvider.notifier)
-        ..start = order
-        ..move = CharacterMoveEnum.run;
+      if (order > 5) {
+        gameRef.magic();
+        return;
+      }
       gameRef.move();
     }
     super.onTapUp(event);

@@ -42,6 +42,6 @@ class BattleSkillAreaComponent extends SpriteAnimationComponent
         SpriteAnimationComponent.fromFrameData(sprite, spriteAnimationData);
     _spriteAnimation
       ..animation = spriteAnimationComponent.animation
-      ..size = character.size * (gameRef.size.y / 800);
+      ..size = character.attack.frames.first.srcSize * (gameRef.size.y / 800);
   }
 }

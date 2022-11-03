@@ -12,6 +12,7 @@ class CharacterComponent extends SpriteAnimationComponent {
 
   final CharacterModel model;
 
+  Vector2 refSize = Vector2.all(0);
   final spriteAnimation = SpriteAnimationComponent();
 
   @override
@@ -63,6 +64,9 @@ class CharacterComponent extends SpriteAnimationComponent {
         SpriteAnimationComponent.fromFrameData(sprite, spriteAnimationData);
     spriteAnimation
       ..animation = spriteAnimationComponent.animation
-      ..size = model.size;
+      ..size = spriteAnimation.animation!.frames.first.sprite.srcSize;
+    if (spriteAnimation.size.x < 192) {
+      position.x = refSize.x / 4.5;
+    }
   }
 }

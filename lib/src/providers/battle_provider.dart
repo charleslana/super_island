@@ -12,7 +12,7 @@ class BattleProvider extends ValueNotifier<dynamic> {
 
   CharacterMoveEnum move;
 
-  late int start;
+  int start = 1;
 
   int hit = 1;
 

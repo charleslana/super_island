@@ -37,6 +37,7 @@ class CharacterPositionComponent extends PositionComponent
     if (isFlip) {
       flipHorizontallyAroundCenter();
     }
+    character.refSize = size;
     await add(BattleShadowComponent(size));
     await add(character);
     await _addLifeBar();
