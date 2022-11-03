@@ -8,6 +8,7 @@ class SpriteData {
     return CharacterModel(
       image: 'characters/shanks2.png',
       size: Vector2(256, 224),
+      audio: 'shanks1.wav',
       standard: SpriteAnimationData.sequenced(
         amount: 4,
         stepTime: 0.1,
@@ -35,13 +36,6 @@ class SpriteData {
         texturePosition: Vector2(256, 235),
         loop: false,
       ),
-      special: SpriteAnimationData.sequenced(
-        amount: 2,
-        stepTime: 0.3,
-        textureSize: Vector2(256, 224),
-        texturePosition: Vector2(500, 250),
-        loop: false,
-      ),
     );
   }
 
@@ -49,6 +43,7 @@ class SpriteData {
     return CharacterModel(
       image: 'characters/crocodile1.png',
       size: Vector2(192, 224),
+      audio: 'crocodile1.wav',
       standard: SpriteAnimationData.sequenced(
         amount: 4,
         stepTime: 0.1,
@@ -73,13 +68,6 @@ class SpriteData {
         stepTime: 0.1,
         textureSize: Vector2(192, 200),
         texturePosition: Vector2(270, 215),
-        loop: false,
-      ),
-      special: SpriteAnimationData.sequenced(
-        amount: 2,
-        stepTime: 0.3,
-        textureSize: Vector2(256, 224),
-        texturePosition: Vector2(500, 250),
         loop: false,
       ),
     );

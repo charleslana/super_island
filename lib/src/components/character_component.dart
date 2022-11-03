@@ -35,9 +35,6 @@ class CharacterComponent extends SpriteAnimationComponent {
       case CharacterMoveEnum.defense:
         await _setSpriteAnimation(model.defense);
         break;
-      case CharacterMoveEnum.special:
-        await _setSpriteAnimation(model.special);
-        break;
       default:
         await _setSpriteAnimation(model.standard);
     }

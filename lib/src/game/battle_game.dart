@@ -88,7 +88,7 @@ class BattleGame extends FlameGame with HasTappableComponents {
     final battleSkillAreaComponent =
         BattleSkillAreaComponent(character: player.character.model);
     await add(battleSkillAreaComponent);
-    await FlameAudio.play('crocodile1.wav');
+    await FlameAudio.play(player.character.model.audio);
     await _defenseAll();
     player.character.spriteAnimation.animation?.onComplete = () async {
       await player.character.setSprite(CharacterMoveEnum.standard);
@@ -129,7 +129,7 @@ class BattleGame extends FlameGame with HasTappableComponents {
     await player.character.setSprite(CharacterMoveEnum.attack);
     player.priority = 5;
     Future.delayed(const Duration(milliseconds: 300), () async {
-      await FlameAudio.play('shanks1.wav');
+      await FlameAudio.play(player.character.model.audio);
       await _defense();
     });
   }
@@ -170,7 +170,11 @@ class BattleGame extends FlameGame with HasTappableComponents {
   }
 
   Future<void> _loadBattleAudio() async {
-    await FlameAudio.audioCache.loadAll(['shanks1.wav', 'bgm_wano.mp3']);
+    await FlameAudio.audioCache.loadAll([
+      'shanks1.wav',
+      'crocodile1.wav',
+      'bgm_wano.mp3',
+    ]);
     FlameAudio.bgm.initialize();
     await FlameAudio.bgm.stop();
     await FlameAudio.bgm.play('bgm_wano.mp3', volume: .50);
