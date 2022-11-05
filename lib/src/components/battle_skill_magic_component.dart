@@ -23,7 +23,7 @@ class BattleSkillMagicComponent extends SpriteAnimationComponent
   @override
   Future<void>? onLoad() async {
     position = characterPosition;
-    position.x = gameRef.size.y / 3;
+    // position.x = characterPosition.x / 1.3;
     await _setSpriteAnimation(character.attack);
     if (isFlip) {
       _spriteAnimation.flipHorizontallyAroundCenter();

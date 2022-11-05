@@ -18,7 +18,7 @@ class RageBarComponent extends PositionComponent with HasPaint {
   }
 
   void changeSize(int size) {
-    if (_spriteComponent.size.x < 100) {
+    if ((_spriteComponent.size.x + size) <= 100) {
       _spriteComponent.size.x += size;
       return;
     }

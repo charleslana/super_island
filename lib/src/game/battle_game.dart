@@ -57,6 +57,7 @@ class BattleGame extends FlameGame with HasTappableComponents {
     await add(SkillActionComponent(5));
     await add(SkillActionComponent(6));
     await add(SkillActionComponent(7));
+    await add(SkillActionComponent(8));
     return super.onLoad();
   }
 
@@ -65,7 +66,11 @@ class BattleGame extends FlameGame with HasTappableComponents {
     FlameAudio.bgm.dispose();
   }
 
-  Future<void> move() async {
+  Future<void> movePlayer() async {
+    if (ref.watch(battleProvider).isReverse) {
+      await _moveEnemy();
+      return;
+    }
     _startPlayer(ref.watch(battleProvider).start);
     _hitPlayer(ref.watch(battleProvider).hit);
     await player.character.setSprite(CharacterMoveEnum.run);
@@ -77,20 +82,25 @@ class BattleGame extends FlameGame with HasTappableComponents {
         Vector2(enemy.position.x - (size.y / 2.2), enemy.position.y),
         EffectController(duration: 0.5),
       )..onComplete = () async {
-          await _attack();
+          await _attackPlayer();
         },
     );
   }
 
-  Future<void> area() async {
+  Future<void> areaPlayer() async {
+    if (ref.watch(battleProvider).isReverse) {
+      await _areaEnemy();
+      return;
+    }
     _startPlayer(ref.watch(battleProvider).start);
     _hitPlayer(ref.watch(battleProvider).hit);
     await player.character.setSprite(CharacterMoveEnum.run);
     final battleSkillAreaComponent =
         BattleSkillAreaComponent(character: player.character.model);
     await add(battleSkillAreaComponent);
+    battleSkillAreaComponent.position = Vector2(size.x / 1.70, size.x / 15);
     await FlameAudio.play(player.character.model.audio);
-    await _defenseAll();
+    await _defenseAllEnemy();
     player.character.spriteAnimation.animation?.onComplete = () async {
       await player.character.setSprite(CharacterMoveEnum.standard);
       player
@@ -101,7 +111,11 @@ class BattleGame extends FlameGame with HasTappableComponents {
     };
   }
 
-  Future<void> magic() async {
+  Future<void> magicPlayer() async {
+    if (ref.watch(battleProvider).isReverse) {
+      await _magicEnemy();
+      return;
+    }
     _startPlayer(ref.watch(battleProvider).start);
     _hitPlayer(ref.watch(battleProvider).hit);
     await player.character.setSprite(CharacterMoveEnum.run);
@@ -117,14 +131,14 @@ class BattleGame extends FlameGame with HasTappableComponents {
           Vector2(enemy.position.x - (size.y / 3), enemy.position.y),
           EffectController(duration: 0.5),
         )..onComplete = () async {
-            await _defense();
+            await _defenseEnemy();
             await battleSkillMagicComponent.hideMagic();
           },
       );
     };
   }
 
-  Future<void> _defenseAll() async {
+  Future<void> _defenseAllEnemy() async {
     final enemies = [
       enemy1,
       enemy2,
@@ -149,16 +163,16 @@ class BattleGame extends FlameGame with HasTappableComponents {
     }
   }
 
-  Future<void> _attack() async {
+  Future<void> _attackPlayer() async {
     await player.character.setSprite(CharacterMoveEnum.attack);
     player.priority = 5;
     Future.delayed(const Duration(milliseconds: 300), () async {
       await FlameAudio.play(player.character.model.audio);
-      await _defense();
+      await _defenseEnemy();
     });
   }
 
-  Future<void> _defense() async {
+  Future<void> _defenseEnemy() async {
     await enemy.character.setSprite(CharacterMoveEnum.defense);
     enemy.character.setDamageColor();
     enemy
@@ -173,11 +187,11 @@ class BattleGame extends FlameGame with HasTappableComponents {
         ..priority = enemy.characterPriority
         ..removeDamage();
       await enemy.character.setSprite(CharacterMoveEnum.standard);
-      await _standard();
+      await _standardPlayer();
     });
   }
 
-  Future<void> _standard() async {
+  Future<void> _standardPlayer() async {
     await player.character.setSprite(CharacterMoveEnum.standard);
     await player.add(
       MoveToEffect(
@@ -191,6 +205,141 @@ class BattleGame extends FlameGame with HasTappableComponents {
           ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
         },
     );
+  }
+
+  Future<void> _moveEnemy() async {
+    _startPlayer(ref.watch(battleProvider).hit);
+    _hitPlayer(ref.watch(battleProvider).start);
+    await enemy.character.setSprite(CharacterMoveEnum.run);
+    enemy
+      ..priority = 1
+      ..toggleBar(isShow: false)
+      ..starterPosition = Vector2(enemy.x, enemy.y);
+    await enemy.add(
+      MoveToEffect(
+        Vector2(player.position.x + (size.y / 2.2), player.position.y),
+        EffectController(duration: 0.5),
+      )..onComplete = () async {
+          await _attackEnemy();
+        },
+    );
+  }
+
+  Future<void> _attackEnemy() async {
+    await enemy.character.setSprite(CharacterMoveEnum.attack);
+    enemy.priority = 5;
+    Future.delayed(const Duration(milliseconds: 300), () async {
+      await FlameAudio.play(enemy.character.model.audio);
+      await _defensePlayer();
+    });
+  }
+
+  Future<void> _defensePlayer() async {
+    await player.character.setSprite(CharacterMoveEnum.defense);
+    player.character.setDamageColor();
+    player
+      ..priority = 4
+      ..removeDamage();
+    await player.setDamage();
+    player
+      ..changeLife(25)
+      ..changeRage(50);
+    Future.delayed(const Duration(milliseconds: 400), () async {
+      player
+        ..priority = player.characterPriority
+        ..removeDamage();
+      await player.character.setSprite(CharacterMoveEnum.standard);
+      await _standardEnemy();
+    });
+  }
+
+  Future<void> _standardEnemy() async {
+    await enemy.character.setSprite(CharacterMoveEnum.standard);
+    await enemy.add(
+      MoveToEffect(
+        enemy.starterPosition,
+        EffectController(duration: 0.5),
+      )..onComplete = () async {
+          enemy
+            ..priority = enemy.characterPriority
+            ..changeRage(10)
+            ..toggleBar();
+          ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
+        },
+    );
+  }
+
+  Future<void> _areaEnemy() async {
+    _startPlayer(ref.watch(battleProvider).hit);
+    _hitPlayer(ref.watch(battleProvider).start);
+    await enemy.character.setSprite(CharacterMoveEnum.run);
+    final battleSkillAreaComponent = BattleSkillAreaComponent(
+      character: enemy.character.model,
+      isFlip: true,
+    );
+    await add(battleSkillAreaComponent);
+    battleSkillAreaComponent.position = Vector2(size.x / 15, size.x / 15);
+    await FlameAudio.play(enemy.character.model.audio);
+    await _defenseAllPlayer();
+    enemy.character.spriteAnimation.animation?.onComplete = () async {
+      await enemy.character.setSprite(CharacterMoveEnum.standard);
+      enemy
+        ..changeRage(10)
+        ..toggleBar();
+      ref.read(battleProvider.notifier).move = CharacterMoveEnum.standard;
+      await battleSkillAreaComponent.hideArea();
+    };
+  }
+
+  Future<void> _defenseAllPlayer() async {
+    final players = [
+      player1,
+      player2,
+      player3,
+      player4,
+      player5,
+      player6,
+    ];
+    for (final p in players) {
+      await p.character.setSprite(CharacterMoveEnum.defense);
+      p.character.setDamageColor();
+      p.removeDamage();
+      await p.setDamage();
+      p
+        ..changeLife(25)
+        ..changeRage(50);
+      Future.delayed(const Duration(milliseconds: 500), () async {
+        await p.character.setSprite(CharacterMoveEnum.standard);
+        p.removeDamage();
+        await p.character.setSprite(CharacterMoveEnum.standard);
+      });
+    }
+  }
+
+  Future<void> _magicEnemy() async {
+    _startPlayer(ref.watch(battleProvider).hit);
+    _hitPlayer(ref.watch(battleProvider).start);
+    await enemy.character.setSprite(CharacterMoveEnum.run);
+    enemy.starterPosition = Vector2(enemy.x, enemy.y);
+    final movePosition = Vector2(enemy.x / 1.3, enemy.y);
+    enemy.character.spriteAnimation.animation?.onComplete = () async {
+      final battleSkillMagicComponent = BattleSkillMagicComponent(
+        character: enemy.character.model,
+        characterPosition: movePosition,
+        isFlip: true,
+      );
+      await add(battleSkillMagicComponent);
+      await FlameAudio.play(enemy.character.model.audio);
+      await battleSkillMagicComponent.add(
+        MoveToEffect(
+          Vector2(player.position.x + (size.y / 7), player.position.y),
+          EffectController(duration: 0.5),
+        )..onComplete = () async {
+            await _defensePlayer();
+            await battleSkillMagicComponent.hideMagic();
+          },
+      );
+    };
   }
 
   Future<void> _loadBattleAudio() async {

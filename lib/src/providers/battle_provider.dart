@@ -16,6 +16,8 @@ class BattleProvider extends ValueNotifier<dynamic> {
 
   int hit = 1;
 
+  bool isReverse = false;
+
   Future<void> toggleAudio({bool playAudio = true}) async {
     if (playAudio) {
       await FlameAudio.bgm.play('bgm_wano.mp3', volume: .50);

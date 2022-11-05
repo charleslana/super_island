@@ -56,6 +56,11 @@ class SkillActionComponent extends PositionComponent
 
   @override
   void onTapUp(TapUpEvent event) {
+    if (order == 8) {
+      gameRef.ref.read(battleProvider.notifier).isReverse =
+          !gameRef.ref.watch(battleProvider).isReverse;
+      return;
+    }
     if (order == 7) {
       if (gameRef.ref.watch(battleProvider).hit >= 6) {
         gameRef.ref.read(battleProvider.notifier).hit = 1;
@@ -69,14 +74,14 @@ class SkillActionComponent extends PositionComponent
         ..start = order
         ..move = CharacterMoveEnum.run;
       if (order >= 4 && order < 6) {
-        gameRef.area();
+        gameRef.areaPlayer();
         return;
       }
       if (order > 5) {
-        gameRef.magic();
+        gameRef.magicPlayer();
         return;
       }
-      gameRef.move();
+      gameRef.movePlayer();
     }
     super.onTapUp(event);
   }
