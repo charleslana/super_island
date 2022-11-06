@@ -1,4 +1,6 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:super_island/src/utils/app_image.dart';
 
 class Btn2 extends StatelessWidget {
   const Btn2({
@@ -13,13 +15,16 @@ class Btn2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: callback,
+      onTap: () async {
+        await FlameAudio.play('click.mp3');
+        callback();
+      },
       child: Container(
         width: 220,
         height: 80,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/icons/btn_2.png'),
+            image: AssetImage(btn2Image),
             fit: BoxFit.contain,
           ),
         ),

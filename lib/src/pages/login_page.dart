@@ -6,6 +6,7 @@ import 'package:super_island/src/widgets/app_animated_rotation.dart';
 import 'package:super_island/src/widgets/app_fade_transition.dart';
 import 'package:super_island/src/widgets/btn_2.dart';
 import 'package:super_island/src/widgets/btn_3.dart';
+import 'package:super_island/src/widgets/btn_sound.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -47,9 +48,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> loadLoginAudio() async {
-    await FlameAudio.audioCache.load('bgm_login.mp3');
     FlameAudio.bgm.initialize();
-    await FlameAudio.bgm.stop();
     await FlameAudio.bgm.play('bgm_login.mp3', volume: .50);
   }
 
@@ -179,15 +178,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       Align(
                         alignment: Alignment.topRight,
-                        child: InkWell(
-                          onTap: toggleAudio,
-                          child: SizedBox(
-                            width: size.width / 6,
-                            height: size.height / 6,
-                            child: Image.asset(
-                              isPlay ? soundOnImage : soundOffImage,
-                              fit: BoxFit.contain,
-                            ),
+                        child: SizedBox(
+                          width: size.width / 6,
+                          height: size.height / 6,
+                          child: BtnSound(
+                            isPlay: isPlay,
+                            callback: toggleAudio,
                           ),
                         ),
                       ),

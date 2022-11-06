@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:super_island/src/routes/routes.dart';
 import 'package:super_island/src/utils/app_image.dart';
+import 'package:super_island/src/utils/cache.dart';
 import 'package:super_island/src/utils/utils.dart';
 import 'package:super_island/src/widgets/btn_1.dart';
 
@@ -13,7 +14,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   bool isError = false;
-  String text = 'Validando versão...';
+  String text = 'Carregando dados...';
   String currentVersion = '1.0.0';
 
   @override
@@ -22,11 +23,20 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    loadAllImage(context);
+    loadAllFont();
+    loadAllAudio();
+    super.didChangeDependencies();
+  }
+
   Future<void> start() async {
     Future.delayed(
       const Duration(milliseconds: 1000),
       () => {
         setState(() {
+          text = 'Validando versão...';
           isError = true;
         }),
         connection(),

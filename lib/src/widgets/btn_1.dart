@@ -1,3 +1,4 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:super_island/src/utils/app_image.dart';
 
@@ -14,7 +15,10 @@ class Btn1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: callback,
+      onTap: () async {
+        await FlameAudio.play('click.mp3');
+        callback();
+      },
       child: SizedBox(
         width: 123,
         height: 41,
