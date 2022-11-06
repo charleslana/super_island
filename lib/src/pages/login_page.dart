@@ -1,5 +1,7 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:super_island/src/providers/login_provider.dart';
 import 'package:super_island/src/routes/routes.dart';
 import 'package:super_island/src/services/shared_local_storage_service.dart';
 import 'package:super_island/src/utils/app_image.dart';
@@ -9,16 +11,17 @@ import 'package:super_island/src/widgets/app_fade_transition.dart';
 import 'package:super_island/src/widgets/btn_2.dart';
 import 'package:super_island/src/widgets/btn_3.dart';
 import 'package:super_island/src/widgets/btn_sound.dart';
+import 'package:super_island/src/widgets/login_dialog.dart';
+import 'package:super_island/src/widgets/register_dialog.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  bool isLogged = false;
+class _LoginPageState extends ConsumerState<LoginPage> {
   bool isChecked = false;
   bool isPlay = true;
   final sharedLocalStorageService = SharedLocalStorageService();
@@ -45,7 +48,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void checkLogin() {
     setState(() {
-      isLogged = false;
       isChecked = true;
     });
   }
@@ -76,9 +78,32 @@ class _LoginPageState extends State<LoginPage> {
     await FlameAudio.bgm.stop();
   }
 
+  void showRegisterDialog() {
+    showDialog<dynamic>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => WillPopScope(
+        onWillPop: () => Future.value(false),
+        child: const RegisterDialog(),
+      ),
+    );
+  }
+
+  void showLoginDialog() {
+    showDialog<dynamic>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) => WillPopScope(
+        onWillPop: () => Future.value(false),
+        child: const LoginDialog(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isLogged = ref.watch(loginProvider);
 
     return SafeArea(
       child: Scaffold(
@@ -158,11 +183,11 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Btn2(
                                 text: 'Login',
-                                callback: () {},
+                                callback: showLoginDialog,
                               ),
                               Btn3(
                                 text: 'Cadastre-se',
-                                callback: () {},
+                                callback: showRegisterDialog,
                               ),
                             ],
                           ),

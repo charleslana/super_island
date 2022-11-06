@@ -8,3 +8,8 @@ String numberAbbreviation(dynamic number) {
   final NumberFormat numberFormat = NumberFormat.compact();
   return numberFormat.format(doubleNumber);
 }
+
+bool isName(String name) {
+  return RegExp(r'^[a-zA-Z0-9]([_](?![_])|[a-zA-Z0-9]){1,18}[a-zA-Z0-9]$')
+      .hasMatch(name);
+}

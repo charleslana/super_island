@@ -14,12 +14,15 @@ void loadAllImage(BuildContext context) {
   precacheImage(const AssetImage(loginZoroImage), context);
   precacheImage(const AssetImage(soundOnImage), context);
   precacheImage(const AssetImage(soundOffImage), context);
+  precacheImage(const AssetImage(bgDialog1Image), context);
+  precacheImage(const AssetImage(bgDialog2Image), context);
 }
 
 Future<void> loadAllAudio() async {
   await FlameAudio.audioCache.loadAll([
     'bgm_login.mp3',
     'click.mp3',
+    'close.mp3',
   ]);
 }
 

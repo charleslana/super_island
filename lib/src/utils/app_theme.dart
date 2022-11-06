@@ -15,8 +15,35 @@ const ColorScheme colorScheme = ColorScheme(
   onError: Colors.redAccent,
   brightness: Brightness.dark,
 );
+
 final ThemeData theme = ThemeData(
   fontFamily: 'PoetsenOne',
   useMaterial3: true,
   colorScheme: colorScheme,
 );
+
+TextStyle asapRegular({
+  double fontSize = 16,
+  FontWeight fontWeight = FontWeight.normal,
+  String fontFamily = 'Asap',
+}) {
+  return TextStyle(
+    color: Colors.white,
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    fontFamily: fontFamily,
+  );
+}
+
+TextStyle svnRegular({
+  double fontSize = 16,
+  FontWeight fontWeight = FontWeight.normal,
+  String fontFamily = 'SVN',
+}) {
+  return TextStyle(
+    color: Colors.white,
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    fontFamily: fontFamily,
+  );
+}

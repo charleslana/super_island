@@ -9,3 +9,6 @@ const loginMihawkImage = 'assets/images/login_mihawk.png';
 const loginZoroImage = 'assets/images/login_zoro.png';
 const soundOnImage = 'assets/images/icons/button_sound_on.png';
 const soundOffImage = 'assets/images/icons/button_sound_off.png';
+const bgDialog1Image = 'assets/images/bg_dialog_1.png';
+const closeDialog1Image = 'assets/images/icons/close_dialog_1.png';
+const bgDialog2Image = 'assets/images/bg_dialog_2.png';
