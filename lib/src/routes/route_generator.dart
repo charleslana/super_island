@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:super_island/src/pages/battle_page.dart';
 import 'package:super_island/src/pages/home_page.dart';
 import 'package:super_island/src/pages/landing_page.dart';
+import 'package:super_island/src/pages/login_page.dart';
 import 'package:super_island/src/pages/splash_screen_page.dart';
 import 'package:super_island/src/routes/routes.dart';
 
@@ -14,6 +15,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SplashScreenPage());
       case Routes.landing:
         return MaterialPageRoute(builder: (_) => const LandingPage());
+      case Routes.login:
+        return MaterialPageRoute(builder: (_) => const LoginPage());
       case Routes.home:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case Routes.battle:

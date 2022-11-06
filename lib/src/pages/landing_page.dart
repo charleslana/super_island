@@ -1,9 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:super_island/src/routes/routes.dart';
 import 'package:super_island/src/utils/app_image.dart';
-import 'package:super_island/src/widgets/animated_super_island_logo.dart';
+import 'package:super_island/src/utils/utils.dart';
+import 'package:super_island/src/widgets/btn_1.dart';
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
+
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  bool isError = false;
+  String text = 'Validando versão...';
+  String currentVersion = '1.0.0';
+
+  @override
+  void initState() {
+    start();
+    super.initState();
+  }
+
+  Future<void> start() async {
+    Future.delayed(
+      const Duration(milliseconds: 1000),
+      () => {
+        setState(() {
+          isError = true;
+        }),
+        connection(),
+      },
+    );
+  }
+
+  void checkVersion() {
+    if (appVersion != currentVersion) {
+      setState(() {
+        isError = false;
+        text =
+            'Há uma nova versão disponível, verifique na sua loja de aplicativos';
+      });
+      return;
+    }
+    goToLogin();
+  }
+
+  void tryAgain() {
+    setState(() {
+      isError = false;
+      text = 'Validando versão...';
+    });
+    connection();
+  }
+
+  void connection() {
+    if (isError) {
+      setState(() {
+        text = 'Erro na conexão com o servidor';
+      });
+      return;
+    }
+    checkVersion();
+  }
+
+  void goToLogin() {
+    Navigator.pushReplacementNamed(context, Routes.login);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,45 +75,44 @@ class LandingPage extends StatelessWidget {
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(logoImage),
+              image: AssetImage(landingImage),
               fit: BoxFit.cover,
             ),
           ),
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black87,
-                  Colors.black12,
-                ],
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(superIslandImage),
+                  fit: BoxFit.contain,
+                  alignment: Alignment.topCenter,
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
               child: Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 200,
-                      child: AnimatedSuperIslandLogo(),
-                    ),
-                    const SizedBox(height: 50),
                     SizedBox(
-                      width: double.infinity,
                       child: Card(
                         elevation: 0,
                         color: Colors.black.withOpacity(0.7),
-                        child: const Padding(
-                          padding: EdgeInsets.all(20),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
                           child: Text(
-                            'Carregando informações...',
+                            text,
                             textAlign: TextAlign.center,
                           ),
                         ),
                       ),
                     ),
+                    if (isError) ...[
+                      const SizedBox(height: 10),
+                      Btn1(
+                        text: 'Tentar novamente',
+                        callback: tryAgain,
+                      ),
+                    ],
                   ],
                 ),
               ),
