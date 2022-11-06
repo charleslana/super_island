@@ -5,3 +5,5 @@ const btn1Image = 'assets/images/icons/btn_1.png';
 const loginImage = 'assets/images/login.jpg';
 const loginMihawkImage = 'assets/images/login_mihawk.png';
 const loginZoroImage = 'assets/images/login_zoro.png';
+const soundOnImage = 'assets/images/icons/button_sound_on.png';
+const soundOffImage = 'assets/images/icons/button_sound_off.png';
