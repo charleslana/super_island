@@ -1,7 +1,9 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:super_island/src/routes/routes.dart';
+import 'package:super_island/src/services/shared_local_storage_service.dart';
 import 'package:super_island/src/utils/app_image.dart';
+import 'package:super_island/src/utils/keys.dart';
 import 'package:super_island/src/widgets/app_animated_rotation.dart';
 import 'package:super_island/src/widgets/app_fade_transition.dart';
 import 'package:super_island/src/widgets/btn_2.dart';
@@ -19,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isLogged = false;
   bool isChecked = false;
   bool isPlay = true;
+  final sharedLocalStorageService = SharedLocalStorageService();
 
   @override
   void initState() {
@@ -49,6 +52,16 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> loadLoginAudio() async {
     FlameAudio.bgm.initialize();
+    final getSound = await sharedLocalStorageService.get<bool>(soundKey);
+    if (getSound != null) {
+      if (getSound) {
+        await FlameAudio.bgm.play('bgm_login.mp3', volume: .50);
+      }
+      setState(() {
+        isPlay = getSound;
+      });
+      return;
+    }
     await FlameAudio.bgm.play('bgm_login.mp3', volume: .50);
   }
 
