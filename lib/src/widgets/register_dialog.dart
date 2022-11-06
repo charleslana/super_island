@@ -24,115 +24,113 @@ class RegisterDialog extends ConsumerWidget {
   Widget dialogContent(BuildContext context, WidgetRef ref) {
     final register = RegisterModel();
 
-    return Stack(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(
-            top: 18,
-            left: 20,
-            right: 20,
-            bottom: 30,
-          ),
-          margin: const EdgeInsets.only(
-            top: 13,
-            right: 8,
-          ),
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgDialog1Image),
-              fit: BoxFit.fill,
+    return SingleChildScrollView(
+      child: Stack(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(
+              top: 30,
+              left: 20,
+              right: 20,
+              bottom: 30,
+            ),
+            margin: const EdgeInsets.only(
+              top: 13,
+              right: 8,
+            ),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(bgDialog1Image),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      'Cadastre-se',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 10,
+                  ),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        onChanged: register.setEmail,
+                        validator: (value) => register.email.validate(),
+                        keyboardType: TextInputType.name,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'E-mail',
+                          errorMaxLines: 2,
+                        ),
+                      ),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        onChanged: register.setName,
+                        validator: (value) => register.name.validate(),
+                        keyboardType: TextInputType.name,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Nome',
+                          errorMaxLines: 2,
+                        ),
+                      ),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        onChanged: register.setPassword,
+                        validator: (value) => register.password.validate(),
+                        keyboardType: TextInputType.name,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Senha',
+                          errorMaxLines: 2,
+                        ),
+                      ),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        onChanged: register.setConfirmPassword,
+                        validator: (value) => register.confirmPassword
+                            .validate(register.password.value),
+                        keyboardType: TextInputType.name,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'Confirme a senha',
+                          errorMaxLines: 3,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Btn1(
+                        text: 'Ok',
+                        callback: () {
+                          ref.read(loginProvider.notifier).toggleLogged();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    'Cadastre-se',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 50,
-                      vertical: 10,
-                    ),
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          onChanged: register.setEmail,
-                          validator: (value) => register.email.validate(),
-                          keyboardType: TextInputType.name,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'E-mail',
-                            errorMaxLines: 2,
-                          ),
-                        ),
-                        TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          onChanged: register.setName,
-                          validator: (value) => register.name.validate(),
-                          keyboardType: TextInputType.name,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'Nome',
-                            errorMaxLines: 2,
-                          ),
-                        ),
-                        TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          onChanged: register.setPassword,
-                          validator: (value) => register.password.validate(),
-                          keyboardType: TextInputType.name,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'Senha',
-                            errorMaxLines: 2,
-                          ),
-                        ),
-                        TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          onChanged: register.setConfirmPassword,
-                          validator: (value) => register.confirmPassword
-                              .validate(register.password.value),
-                          keyboardType: TextInputType.name,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'Confirme a senha',
-                            errorMaxLines: 3,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Btn1(
-                          text: 'Ok',
-                          callback: () {
-                            ref.read(loginProvider.notifier).toggleLogged();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        CloseDialog(() => Navigator.of(context).pop()),
-      ],
+          CloseDialog(() => Navigator.of(context).pop()),
+        ],
+      ),
     );
   }
 }
