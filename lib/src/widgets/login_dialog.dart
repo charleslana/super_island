@@ -7,6 +7,45 @@ import 'package:super_island/src/widgets/close_dialog.dart';
 class LoginDialog extends StatelessWidget {
   const LoginDialog({Key? key}) : super(key: key);
 
+  void _showFullScreenKeyboard(
+      BuildContext context, TextEditingController textEditingController) {
+    showDialog<dynamic>(
+      context: context,
+      builder: (context) {
+        return Scaffold(
+          body: Column(
+            children: [
+              Expanded(child: Container()),
+              Row(
+                children: [
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                      maxLines: null,
+                      autofocus: true,
+                      controller: textEditingController,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Ok'),
+                  ),
+                  const SizedBox(width: 200),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -15,12 +54,14 @@ class LoginDialog extends StatelessWidget {
       ),
       elevation: 0,
       backgroundColor: Colors.transparent,
-      child: dialogContent(context),
+      child: _dialogContent(context),
     );
   }
 
-  Widget dialogContent(BuildContext context) {
+  Widget _dialogContent(BuildContext context) {
     final login = LoginModel();
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
 
     return SingleChildScrollView(
       child: Stack(
@@ -65,25 +106,38 @@ class LoginDialog extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: login.setEmail,
-                        validator: (value) => login.email.validate(),
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'E-mail',
-                          errorMaxLines: 2,
+                      GestureDetector(
+                        onTap: () =>
+                            _showFullScreenKeyboard(context, emailController),
+                        child: TextFormField(
+                          enabled: false,
+                          controller: emailController,
+                          textInputAction: TextInputAction.next,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          onChanged: login.setEmail,
+                          validator: (value) => login.email.validate(),
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'E-mail',
+                            errorMaxLines: 2,
+                          ),
                         ),
                       ),
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: login.setPassword,
-                        validator: (value) => login.password.validate(),
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'Senha',
-                          errorMaxLines: 2,
+                      GestureDetector(
+                        onTap: () => _showFullScreenKeyboard(
+                            context, passwordController),
+                        child: TextFormField(
+                          enabled: false,
+                          controller: passwordController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          onChanged: login.setPassword,
+                          validator: (value) => login.password.validate(),
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Senha',
+                            errorMaxLines: 2,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),

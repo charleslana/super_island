@@ -9,6 +9,45 @@ import 'package:super_island/src/widgets/close_dialog.dart';
 class RegisterDialog extends ConsumerWidget {
   const RegisterDialog({Key? key}) : super(key: key);
 
+  void _showFullScreenKeyboard(
+      BuildContext context, TextEditingController textEditingController) {
+    showDialog<dynamic>(
+      context: context,
+      builder: (context) {
+        return Scaffold(
+          body: Column(
+            children: [
+              Expanded(child: Container()),
+              Row(
+                children: [
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                      maxLines: null,
+                      autofocus: true,
+                      controller: textEditingController,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Ok'),
+                  ),
+                  const SizedBox(width: 200),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Dialog(
@@ -17,12 +56,16 @@ class RegisterDialog extends ConsumerWidget {
       ),
       elevation: 0,
       backgroundColor: Colors.transparent,
-      child: dialogContent(context, ref),
+      child: _dialogContent(context, ref),
     );
   }
 
-  Widget dialogContent(BuildContext context, WidgetRef ref) {
+  Widget _dialogContent(BuildContext context, WidgetRef ref) {
     final register = RegisterModel();
+    final emailController = TextEditingController();
+    final nameController = TextEditingController();
+    final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
 
     return SingleChildScrollView(
       child: Stack(
@@ -67,51 +110,78 @@ class RegisterDialog extends ConsumerWidget {
                   ),
                   child: Column(
                     children: [
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: register.setEmail,
-                        validator: (value) => register.email.validate(),
-                        keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'E-mail',
-                          errorMaxLines: 2,
+                      GestureDetector(
+                        onTap: () =>
+                            _showFullScreenKeyboard(context, emailController),
+                        child: TextFormField(
+                          enabled: false,
+                          controller: emailController,
+                          textInputAction: TextInputAction.next,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          onChanged: register.setEmail,
+                          validator: (value) => register.email.validate(),
+                          keyboardType: TextInputType.name,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'E-mail',
+                            errorMaxLines: 2,
+                          ),
                         ),
                       ),
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: register.setName,
-                        validator: (value) => register.name.validate(),
-                        keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'Nome',
-                          errorMaxLines: 2,
+                      GestureDetector(
+                        onTap: () =>
+                            _showFullScreenKeyboard(context, nameController),
+                        child: TextFormField(
+                          enabled: false,
+                          controller: nameController,
+                          textInputAction: TextInputAction.next,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          onChanged: register.setName,
+                          validator: (value) => register.name.validate(),
+                          keyboardType: TextInputType.name,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Nome',
+                            errorMaxLines: 2,
+                          ),
                         ),
                       ),
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: register.setPassword,
-                        validator: (value) => register.password.validate(),
-                        keyboardType: TextInputType.name,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'Senha',
-                          errorMaxLines: 2,
+                      GestureDetector(
+                        onTap: () => _showFullScreenKeyboard(
+                            context, passwordController),
+                        child: TextFormField(
+                          enabled: false,
+                          controller: passwordController,
+                          textInputAction: TextInputAction.next,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          onChanged: register.setPassword,
+                          validator: (value) => register.password.validate(),
+                          keyboardType: TextInputType.name,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Senha',
+                            errorMaxLines: 2,
+                          ),
                         ),
                       ),
-                      TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        onChanged: register.setConfirmPassword,
-                        validator: (value) => register.confirmPassword
-                            .validate(register.password.value),
-                        keyboardType: TextInputType.name,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'Confirme a senha',
-                          errorMaxLines: 3,
+                      GestureDetector(
+                        onTap: () => _showFullScreenKeyboard(
+                            context, confirmPasswordController),
+                        child: TextFormField(
+                          enabled: false,
+                          controller: confirmPasswordController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          onChanged: register.setConfirmPassword,
+                          validator: (value) => register.confirmPassword
+                              .validate(register.password.value),
+                          keyboardType: TextInputType.name,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Confirme a senha',
+                            errorMaxLines: 3,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
