@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:super_island/src/models/login_model.dart';
 import 'package:super_island/src/utils/app_image.dart';
+import 'package:super_island/src/utils/utils.dart';
 import 'package:super_island/src/widgets/btn_1.dart';
 import 'package:super_island/src/widgets/close_dialog.dart';
 
@@ -31,9 +32,7 @@ class LoginDialog extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                     child: const Text('Ok'),
                   ),
                   const SizedBox(width: 200),
@@ -44,6 +43,11 @@ class LoginDialog extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _loading(BuildContext context) {
+    loading(context);
+    Future.delayed(const Duration(seconds: 2), () => Navigator.pop(context));
   }
 
   @override
@@ -143,7 +147,7 @@ class LoginDialog extends StatelessWidget {
                       const SizedBox(height: 20),
                       Btn1(
                         text: 'Ok',
-                        callback: () => Navigator.of(context).pop(),
+                        callback: () => _loading(context),
                       ),
                     ],
                   ),
