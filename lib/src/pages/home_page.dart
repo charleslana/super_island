@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                 Positioned(
                   bottom: height * 0.05,
                   right: width * 0.01,
-                  child: const ShipAnimated(),
+                  child: ShipAnimated(height: height),
                 ),
                 Align(
                   alignment: Alignment.topRight,

@@ -1,10 +1,13 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:super_island/src/utils/app_image.dart';
 
 class ShipAnimated extends StatefulWidget {
-  const ShipAnimated({Key? key}) : super(key: key);
+  const ShipAnimated({
+    Key? key,
+    required this.height,
+  }) : super(key: key);
+
+  final double height;
 
   @override
   State<ShipAnimated> createState() => _ShipAnimatedState();
@@ -44,16 +47,14 @@ class _ShipAnimatedState extends State<ShipAnimated>
       _buildSizeAnimationWithAnimatedContainer();
 
   Future<void> _runShip() async {
-    final physicalScreenSize = window.physicalSize;
-    final physicalHeight = physicalScreenSize.height;
     setState(() {
-      _size = physicalHeight * 0.40;
+      _size = widget.height * 0.40;
     });
     await _controller.forward();
     await Future.delayed(
       const Duration(),
       () => setState(() {
-        _size = physicalHeight * 0.90;
+        _size = widget.height * 0.90;
       }),
     );
   }
