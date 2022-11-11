@@ -15,7 +15,11 @@ void loadAllImage(BuildContext context) {
   precacheImage(const AssetImage(soundOnImage), context);
   precacheImage(const AssetImage(soundOffImage), context);
   precacheImage(const AssetImage(bgDialog1Image), context);
+  precacheImage(const AssetImage(closeDialog1Image), context);
   precacheImage(const AssetImage(bgDialog2Image), context);
+  precacheImage(const AssetImage(loadingImage), context);
+  precacheImage(const AssetImage(homeImage), context);
+  precacheImage(const AssetImage(goingMerryImage), context);
 }
 
 Future<void> loadAllAudio() async {
@@ -23,6 +27,7 @@ Future<void> loadAllAudio() async {
     'bgm_login.mp3',
     'click.mp3',
     'close.mp3',
+    'bgm_home.wav',
   ]);
 }
 

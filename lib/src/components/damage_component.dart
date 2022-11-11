@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:super_island/src/utils/app_theme.dart';
 import 'package:super_island/src/utils/utils.dart';
 
 class DamageComponent extends TextComponent {
@@ -29,10 +30,9 @@ class DamageComponent extends TextComponent {
       flipHorizontallyAroundCenter();
     }
     final textPaint = TextPaint(
-      style: TextStyle(
+      style: dinRegular().copyWith(
         color: Colors.red,
         fontSize: size.y / 2,
-        fontFamily: 'PoetsenOne',
         shadows: const [
           Shadow(offset: Offset(-1.5, -1.5)),
           Shadow(offset: Offset(1.5, -1.5)),

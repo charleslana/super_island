@@ -47,3 +47,16 @@ TextStyle svnRegular({
     fontFamily: fontFamily,
   );
 }
+
+TextStyle dinRegular({
+  double fontSize = 16,
+  FontWeight fontWeight = FontWeight.normal,
+  String fontFamily = 'DIN',
+}) {
+  return TextStyle(
+    color: Colors.white,
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    fontFamily: fontFamily,
+  );
+}

@@ -33,12 +33,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    FlameAudio.bgm.dispose();
-    super.dispose();
-  }
-
   Future<void> validateLogin() async {
     Future.delayed(
       const Duration(milliseconds: 1000),

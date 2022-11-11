@@ -46,3 +46,7 @@ flutter:
     - family: SVN
       fonts:
         - asset: assets/fonts/SVN-Titillium-bold.ttf
+
+    - family: DIN
+      fonts:
+        - asset: assets/fonts/DIN-Alternate-Bold.ttf
