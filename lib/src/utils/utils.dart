@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:super_island/src/enums/toast_enum.dart';
 import 'package:super_island/src/widgets/loading_animated.dart';
 
 String appVersion = '1.0.0';
@@ -46,6 +47,51 @@ void loading(BuildContext context) {
               ],
             ),
           ),
+        ),
+      );
+    },
+  );
+}
+
+void showToast(BuildContext context, String message, ToastEnum toastEnum) {
+  showDialog<dynamic>(
+    context: context,
+    barrierColor: null,
+    builder: (BuildContext context) {
+      return Dialog(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: toastEnum == ToastEnum.error
+                    ? Colors.redAccent
+                    : Colors.green,
+                shadows: const [
+                  Shadow(
+                    // bottomLeft
+                    offset: Offset(-1.5, -1.5),
+                  ),
+                  Shadow(
+                    // bottomRight
+                    offset: Offset(1.5, -1.5),
+                  ),
+                  Shadow(
+                    // topRight
+                    offset: Offset(1.5, 1.5),
+                  ),
+                  Shadow(
+                    // topLeft
+                    offset: Offset(-1.5, 1.5),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       );
     },

@@ -1,11 +1,13 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:super_island/src/enums/toast_enum.dart';
 import 'package:super_island/src/providers/login_provider.dart';
 import 'package:super_island/src/routes/routes.dart';
 import 'package:super_island/src/services/shared_local_storage_service.dart';
 import 'package:super_island/src/utils/app_image.dart';
 import 'package:super_island/src/utils/keys.dart';
+import 'package:super_island/src/utils/utils.dart';
 import 'package:super_island/src/widgets/app_animated_rotation.dart';
 import 'package:super_island/src/widgets/app_fade_transition.dart';
 import 'package:super_island/src/widgets/btn_2.dart';
@@ -84,6 +86,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void showLoginDialog() {
+    showToast(context, 'Credenciais inválidas', ToastEnum.error);
     showDialog<dynamic>(
       barrierDismissible: false,
       context: context,
